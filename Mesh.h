@@ -9,6 +9,7 @@
 #include "Math/float2.h"
 #include "Math/float4x4.h"
 
+#include "assimp/scene.h"
 #include "assimp/mesh.h"
 
 class Mesh
@@ -25,6 +26,6 @@ class Mesh
 	private:
 		const unsigned indices_per_face = 3;
 
-		GLuint vbo, ebo, vao;
+		unsigned vbo, ebo, vao;
 		unsigned num_vertices, num_indices;
 };

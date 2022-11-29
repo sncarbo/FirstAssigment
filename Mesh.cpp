@@ -1,5 +1,11 @@
 #include "Mesh.h"
 
+Mesh::Mesh()
+{}
+
+Mesh::~Mesh()
+{}
+
 void Mesh::LoadVBO(const aiMesh* mesh)
 {
 	glGenBuffers(1, &vbo);
@@ -38,11 +44,12 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, nullptr, GL_STATIC_DRAW);
 
-	unsigned* indices = (unsigned*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_MAP_WRITE_BIT));
+	unsigned *indices = (unsigned*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_MAP_WRITE_BIT));
 
 	for (unsigned i = 0; i < mesh->mNumFaces; ++i)
 	{
 		assert(mesh->mFaces[i].mNumIndices == indices_per_face);
+
 		*(indices++) = mesh->mFaces[i].mIndices[0];
 		*(indices++) = mesh->mFaces[i].mIndices[1];
 		*(indices++) = mesh->mFaces[i].mIndices[2];

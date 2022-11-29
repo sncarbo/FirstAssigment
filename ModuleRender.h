@@ -25,6 +25,8 @@ public:
 	ModuleRender();
 	~ModuleRender();
 
+	void InitSDL();
+	void InitGlew();
 	bool Init();
 	update_status PreUpdate();
 	update_status Update();
@@ -43,7 +45,7 @@ public:
 
 private:
 	void *context;
-
+	int width, height;
 	unsigned int VBO;
 	ShadersProgram *program;
 	Model *model;

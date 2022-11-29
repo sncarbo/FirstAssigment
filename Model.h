@@ -22,10 +22,10 @@ class Model
 		~Model();
 
 		void Load(const char *filename);
-		void LoadMaterials();
 		void LoadMeshes();
-		Mesh* GetMesh();
-		vector<unsigned>& GeMaterials();
+		void LoadMaterials();
+		Mesh* GetMesh() const;
+		vector<unsigned>& GetMaterials();
 	private:
 		const aiScene *scene;
 		Mesh *mesh;

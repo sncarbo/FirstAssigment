@@ -38,12 +38,12 @@ GLuint ModuleTexture::LoadTexture(const char* path)
 
 	if (SUCCEEDED(hr))
 	{
-		glGenTextures(1, &textureId);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-
 		ScratchImage flippedTexture;
 		FlipRotate(auxImage.GetImages(), auxImage.GetImageCount(), auxImage.GetMetadata(), TEX_FR_FLIP_VERTICAL, flippedTexture);
 		texture = flippedTexture.GetImage(0, 0, 0);
+
+		glGenTextures(1, &textureId);
+		glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 	else
 	{

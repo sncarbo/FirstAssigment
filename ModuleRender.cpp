@@ -8,7 +8,7 @@ ModuleRender::~ModuleRender()
 {
 }
 
-bool ModuleRender::Init()
+void ModuleRender::InitSDL()
 {
 	LOG2("Creating Renderer context");
 
@@ -20,8 +20,11 @@ bool ModuleRender::Init()
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	context = SDL_GL_CreateContext(App->GetWindow()->window);
-	
-	GLenum err = glewInit();
+}
+
+void ModuleRender::InitGlew()
+{
+	glewInit();
 
 	LOG2("Using Glew %s", glewGetString(GLEW_VERSION));
 	LOG2("Vendor: %s", glGetString(GL_VENDOR));
@@ -32,10 +35,17 @@ bool ModuleRender::Init()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
+}
 
-	program = new ShadersProgram();
+bool ModuleRender::Init()
+{
+	InitSDL();
+	InitGlew();
+
 	model = new Model();
 	model->Load("./baker_house_model/BakerHouse.fbx");
+
+	program = new ShadersProgram();
 
 	return true;
 }
@@ -53,11 +63,10 @@ update_status ModuleRender::PreUpdate()
 
 update_status ModuleRender::Update()
 {
-	int width, height;
 	SDL_GetWindowSize(App->GetWindow()->window, &width, &height);
 	glViewport(0, 0, width, height);
 
-	model->GetMesh()->Draw(model->GeMaterials());
+	model->GetMesh()->Draw(model->GetMaterials());
 
 	return UPDATE_CONTINUE;
 }
@@ -82,6 +91,8 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
+	this->width = width;
+	this->height = height;
 }
 
 void* ModuleRender::GetContext()

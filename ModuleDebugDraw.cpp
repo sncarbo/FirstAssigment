@@ -32,7 +32,8 @@ public:
             glDisable(GL_DEPTH_TEST);
         }
 
-        glBindBuffer(GL_ARRAY_BUFFER, linePointVBO);
+        
+        (GL_ARRAY_BUFFER, linePointVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(dd::DrawVertex), points);
 
         glDrawArrays(GL_POINTS, 0, count);

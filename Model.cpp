@@ -38,6 +38,8 @@ void Model::LoadMaterials()
 
 void Model::LoadMeshes()
 {
+	mesh = new Mesh();
+
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{
 		mesh->LoadVBO(scene->mMeshes[i]);
@@ -46,12 +48,12 @@ void Model::LoadMeshes()
 	}
 }
 
-Mesh* Model::GetMesh()
+Mesh* Model::GetMesh() const
 {
 	return mesh;
 }
 
-vector<unsigned>& Model::GeMaterials()
+vector<unsigned>& Model::GetMaterials()
 {
 	return materials;
 }
