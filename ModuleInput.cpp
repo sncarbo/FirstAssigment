@@ -5,7 +5,7 @@
 #include "SDL/include/SDL.h"
 #include "imgui_impl_sdl.h"
 
-ModuleInput::ModuleInput() : keyboard(NULL)
+ModuleInput::ModuleInput() : keyboard(NULL), mouseWheel(0)
 {}
 
 ModuleInput::~ModuleInput()
@@ -36,10 +36,25 @@ update_status ModuleInput::Update()
         {
             case SDL_QUIT:
                 return UPDATE_STOP;
+
             case SDL_WINDOWEVENT:
                 if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
                     App->GetRenderer()->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
                 break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                break;
+
+            case SDL_MOUSEMOTION:
+                break;
+
+            case SDL_MOUSEWHEEL:
+                mouseWheel = sdlEvent.wheel.y;
+                break;
+
         }
     }
 
@@ -54,6 +69,16 @@ bool ModuleInput::CleanUp()
 	LOG2("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+int ModuleInput::GetMouseWheel() const
+{
+    return mouseWheel;
+}
+
+bool ModuleInput::Scroll()
+{
+    return (mouseWheel != 0);
 }
 
 bool ModuleInput::CheckScanCode(int scancode)

@@ -42,6 +42,7 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 	void* GetContext();
 	ShadersProgram* GetProgram();
+	void Draw();
 
 private:
 	void *context;

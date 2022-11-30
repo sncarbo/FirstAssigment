@@ -64,10 +64,9 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	SDL_GetWindowSize(App->GetWindow()->window, &width, &height);
-	glViewport(0, 0, width, height);
 
-	model->GetMesh()->Draw(model->GetMaterials());
-
+	Draw();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -103,6 +102,11 @@ void* ModuleRender::GetContext()
 ShadersProgram* ModuleRender::GetProgram()
 {
 	return program;
+}
+
+void ModuleRender::Draw()
+{
+	model->GetMesh()->Draw(model->GetMaterials(), float4x4::identity);
 }
 
 

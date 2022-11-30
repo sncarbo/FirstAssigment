@@ -8,7 +8,7 @@ ModuleCamera::ModuleCamera()
 	farPlane = 200.0f;
 	horizontalFov = DegToRad(90.0f);
 	aspectRatio = SCREEN_WIDTH / SCREEN_HEIGHT;
-	pos = float3(0.0f, 1.0f, -2.0f);
+	pos = float3(0.0f, 2.0f, -5.0f);
 	front = float3::unitZ;
 	up = float3::unitY;
 	movementSpeed = normal_movement_speed;
@@ -26,6 +26,8 @@ bool ModuleCamera::Init()
 	frustum.SetPos(pos);
 	frustum.SetFront(front);
 	frustum.SetUp(up);
+
+	Focus();
 
 	return true;
 }
@@ -51,12 +53,10 @@ update_status ModuleCamera::Update()
 	else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_D))
 		MoveRight();
 
-	frustum.SetKind(frustumProjectiveSpace, frustumHandedness);
-	frustum.SetViewPlaneDistances(nearPlane, farPlane);
-	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
-	frustum.SetPos(pos);
-	frustum.SetFront(front);
-	frustum.SetUp(up);
+	if (App->GetInput()->Scroll())
+		Zoom();
+
+	UpdateFrustumParameters();
 	
 	return UPDATE_CONTINUE;
 }
@@ -69,6 +69,16 @@ update_status ModuleCamera::PostUpdate()
 bool ModuleCamera::CleanUp()
 {
 	return true;
+}
+
+void ModuleCamera::SetHorizontalFov(float horizontalFov)
+{
+	this->horizontalFov -= horizontalFov;
+
+	if (this->horizontalFov < min_horizontal_fov)
+		this->horizontalFov = min_horizontal_fov;
+	else if (this->horizontalFov > max_horizontal_fov)
+		this->horizontalFov = max_horizontal_fov;
 }
 
 void ModuleCamera::MoveFront()
@@ -91,14 +101,9 @@ void ModuleCamera::MoveLeft()
 	pos = pos - frustum.WorldRight() * movementSpeed;
 }
 
-void ModuleCamera::ZoomIn()
+void ModuleCamera::Zoom()
 {
-
-}
-
-void ModuleCamera::ZoomOut()
-{
-
+	SetHorizontalFov(App->GetInput()->GetMouseWheel());
 }
 
 void ModuleCamera::Orbit()
@@ -119,6 +124,14 @@ void ModuleCamera::NormalMovementSpeed()
 void ModuleCamera::DuplicateMovementSpeed()
 {
 	movementSpeed = 2 * normal_movement_speed;
+}
+
+void ModuleCamera::UpdateFrustumParameters()
+{
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
+	frustum.SetPos(pos);
+	frustum.SetFront(front);
+	frustum.SetUp(up);
 }
 
 void ModuleCamera::RotateCamera(float3x3 rotationDeltaMatrix)

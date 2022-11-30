@@ -44,7 +44,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, nullptr, GL_STATIC_DRAW);
 
-	unsigned *indices = (unsigned*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_MAP_WRITE_BIT));
+	unsigned *indices = (unsigned*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
 
 	for (unsigned i = 0; i < mesh->mNumFaces; ++i)
 	{
@@ -71,12 +71,11 @@ void Mesh::CreateVAO()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * num_vertices));
 }
 
-void Mesh::Draw(const std::vector<unsigned>& model_textures)
+void Mesh::Draw(const vector<unsigned>& model_textures, const float4x4& model)
 {
 	unsigned program = App->GetRenderer()->GetProgram()->GetShaderProgramId();;
 	const float4x4& view = App->GetCamera()->GetFrustum().ViewMatrix();
 	const float4x4& proj = App->GetCamera()->GetFrustum().ProjectionMatrix();
-	float4x4 model = float4x4::identity;
 
 	glUseProgram(program);
 	glUniformMatrix4fv(glGetUniformLocation(program, "model"), 4, GL_TRUE, (const float*)&model);
@@ -86,7 +85,7 @@ void Mesh::Draw(const std::vector<unsigned>& model_textures)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, model_textures[0]);
 
-	glUniform1i(glGetUniformLocation(program, "mytexture"), 0);
+	glUniform1i(glGetUniformLocation(program, "diffuse"), 0);
 	glBindVertexArray(vao);
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);

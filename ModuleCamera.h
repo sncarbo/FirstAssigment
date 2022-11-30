@@ -21,22 +21,26 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void SetHorizontalFov(float horizontalFov);
+
 	void MoveFront();
 	void MoveBack();
 	void MoveRight();
 	void MoveLeft();
-	void ZoomIn();
-	void ZoomOut();
+	void Zoom();
 	void Orbit();
 	void Focus();
 	void NormalMovementSpeed();
 	void DuplicateMovementSpeed();
 
+	void UpdateFrustumParameters();
 	void RotateCamera(float3x3 rotationDeltaMatrix);
 
 	Frustum GetFrustum() const;
 
 private:
+	const float min_horizontal_fov = 1.0;
+	const float max_horizontal_fov = 15.0;
 	const float normal_movement_speed = 0.015625;
 
 	Frustum frustum;

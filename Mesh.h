@@ -12,6 +12,8 @@
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
 
+using namespace std;
+
 class Mesh
 {
 	public:
@@ -21,7 +23,7 @@ class Mesh
 		void LoadVBO(const aiMesh* mesh);
 		void LoadEBO(const aiMesh* mesh);
 		void CreateVAO();
-		void Draw(const std::vector<unsigned>& model_textures);
+		void Draw(const vector<unsigned>& model_textures, const float4x4& model);
 
 	private:
 		const unsigned indices_per_face = 3;

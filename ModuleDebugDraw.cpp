@@ -566,7 +566,8 @@ bool ModuleDebugDraw::CleanUp()
 update_status ModuleDebugDraw::Update()
 {
     Draw(App->GetCamera()->GetFrustum().ViewMatrix(), App->GetCamera()->GetFrustum().ProjectionMatrix(), App->GetWindow()->GetWidth(), App->GetWindow()->GetHeight());
-	return UPDATE_CONTINUE;
+
+    return UPDATE_CONTINUE;
 }
 
 void ModuleDebugDraw::Draw(const float4x4& view, const float4x4& proj, unsigned width, unsigned height)
