@@ -55,7 +55,7 @@ update_status ModuleRender::PreUpdate()
 	int width, height;
 	SDL_GetWindowSize(App->GetWindow()->window, &width, &height);
 	glViewport(0, 0, width, height);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.4f, 0.4f, 0.5f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	return UPDATE_CONTINUE;
@@ -66,6 +66,10 @@ update_status ModuleRender::Update()
 	SDL_GetWindowSize(App->GetWindow()->window, &width, &height);
 
 	Draw();
+
+	App->GetDebugDraw()->DrawSquareGrid(square_grid_mins, square_grid_maxs, square_grid_y, square_grid_step, dd::colors::Black);
+
+	App->GetDebugDraw()->Draw(App->GetCamera()->GetFrustum().ViewMatrix(), App->GetCamera()->GetFrustum().ProjectionMatrix(), App->GetWindow()->GetWidth(), App->GetWindow()->GetHeight());
 	
 	return UPDATE_CONTINUE;
 }

@@ -21,13 +21,17 @@ class Model
 		Model();
 		~Model();
 
-		void Load(const char *filename);
+		void Load();
 		void LoadMeshes();
 		void LoadMaterials();
+
+		void SetModelPath(char* modelPath);
+
 		Mesh* GetMesh() const;
 		vector<unsigned>& GetMaterials();
 	private:
 		const aiScene *scene;
 		Mesh *mesh;
 		vector<unsigned> materials;
+		char* modelPath;
 };

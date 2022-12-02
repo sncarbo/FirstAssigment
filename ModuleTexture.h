@@ -20,12 +20,16 @@ class ModuleTexture : public Module
 		update_status Update();
 		bool CleanUp();
 
-		GLuint LoadTexture(const char* path);
+		GLuint LoadTexture();
 
+		void SetTexturePath(char* texturePath);
+
+		char* GetTexturePath() const;
 		TexMetadata& GetInfo();
 
 	private:
 		const Image* texture;
+		char* texturePath;
 		GLuint textureId;
 		TexMetadata info;
 };

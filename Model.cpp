@@ -1,23 +1,26 @@
 #include "Model.h"
 
-Model::Model()
+Model::Model() : modelPath()
 {}
 
 Model::~Model()
 {}
 
-void Model::Load(const char* filename)
+void Model::Load()
 {
-	scene = aiImportFile(filename, aiProcessPreset_TargetRealtime_MaxQuality);
+	if (modelPath != nullptr)
+	{
+		scene = aiImportFile(modelPath, aiProcessPreset_TargetRealtime_MaxQuality);
 
-	if (scene)
-	{
-		LoadMaterials();
-		LoadMeshes();
-	}
-	else
-	{
-		LOG2("Error loading %s: %s", filename, aiGetErrorString());
+		if (scene)
+		{
+			LoadMaterials();
+			LoadMeshes();
+		}
+		else
+		{
+			LOG2("Error loading %s: %s", modelPath, aiGetErrorString());
+		}
 	}
 }
 
@@ -27,11 +30,13 @@ void Model::LoadMaterials()
 
 	materials.reserve(scene->mNumMaterials);
 
-	for (unsigned i = 0; i < scene->mNumMaterials; ++i)
+	if(scene->mNumMaterials == 1)
 	{
-		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
+		if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
-			materials.push_back(App->GetTextures()->LoadTexture(file.data));
+			App->GetTextures()->SetTexturePath(file.data);
+
+			materials.push_back(App->GetTextures()->LoadTexture());
 		}
 	}
 }
@@ -44,8 +49,13 @@ void Model::LoadMeshes()
 	{
 		mesh->LoadVBO(scene->mMeshes[i]);
 		mesh->LoadEBO(scene->mMeshes[i]);
-		mesh->CreateVAO();
+		mesh->CreateVAO(i);
 	}
+}
+
+void Model::SetModelPath(char* modelPath)
+{
+	this->modelPath = modelPath;
 }
 
 Mesh* Model::GetMesh() const

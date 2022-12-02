@@ -18,4 +18,4 @@ enum update_status
 #define SCREEN_HEIGHT 600
 #define FULLSCREEN false
 #define VSYNC true
-#define TITLE "Super Awesome Engine"
+#define TITLE "Sakuraba Engine"

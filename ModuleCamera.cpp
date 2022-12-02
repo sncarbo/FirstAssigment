@@ -7,7 +7,7 @@ ModuleCamera::ModuleCamera()
 	nearPlane = 0.1f;
 	farPlane = 200.0f;
 	horizontalFov = DegToRad(90.0f);
-	aspectRatio = SCREEN_WIDTH / SCREEN_HEIGHT;
+	aspectRatio = App->GetWindow()->GetWidth() / App->GetWindow()->GetHeight();
 	pos = float3(0.0f, 2.0f, -5.0f);
 	front = float3::unitZ;
 	up = float3::unitY;
@@ -44,14 +44,20 @@ update_status ModuleCamera::Update()
 	else
 		NormalMovementSpeed();
 
-	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_W))
-		MoveFront();
-	else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_S))
-		MoveBack();
-	else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_A))
-		MoveLeft();
-	else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_D))
-		MoveRight();
+	if(App->GetInput()->GetMouseDown())
+	{
+		if (App->GetInput()->GetMouseMotion())
+			//RotateCamera(float3x3 rotationDeltaMatrix);
+
+		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_W))
+			MoveFront();
+		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_S))
+			MoveBack();
+		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_A))
+			MoveLeft();
+		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_D))
+			MoveRight();
+	}
 
 	if (App->GetInput()->Scroll())
 		Zoom();

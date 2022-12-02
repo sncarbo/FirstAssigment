@@ -1,11 +1,5 @@
 #include "ModuleDebugDraw.h"
 
-#define DEBUG_DRAW_IMPLEMENTATION
-#include "DebugDraw.h"
-#include "SDL.h"
-
-#include "glew.h"
-
 class DDRenderInterfaceCoreGL final
     : public dd::RenderInterface
 {
@@ -565,20 +559,19 @@ bool ModuleDebugDraw::CleanUp()
 
 update_status ModuleDebugDraw::Update()
 {
-    Draw(App->GetCamera()->GetFrustum().ViewMatrix(), App->GetCamera()->GetFrustum().ProjectionMatrix(), App->GetWindow()->GetWidth(), App->GetWindow()->GetHeight());
-
     return UPDATE_CONTINUE;
+}
+
+void ModuleDebugDraw::DrawSquareGrid(float mins, float maxs, float y, float step, ddVec3_In color)
+{
+    dd::xzSquareGrid(mins, maxs, y, step, color);
 }
 
 void ModuleDebugDraw::Draw(const float4x4& view, const float4x4& proj, unsigned width, unsigned height)
 {
-    dd::xzSquareGrid(-10, 10, 0.0f, 1.0f, dd::colors::Gray);
-
     implementation->width     = width;
     implementation->height    = height;
     implementation->mvpMatrix = proj * view;
 
     dd::flush();
 }
-
-

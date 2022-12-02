@@ -1,11 +1,8 @@
-#include "Globals.h"
-#include "Application.h"
 #include "ModuleInput.h"
-#include "ModuleRender.h"
-#include "SDL/include/SDL.h"
-#include "imgui_impl_sdl.h"
 
-ModuleInput::ModuleInput() : keyboard(NULL), mouseWheel(0)
+ModuleInput::ModuleInput() : keyboard(NULL), mouseDown(false), mouseMotion(false), 
+                                mouseX(0.0), mouseY(0.0), mouseWheel(0), fileChange(false), 
+                                fbxFile(nullptr), pngFile(nullptr), ddsFile(nullptr)
 {}
 
 ModuleInput::~ModuleInput()
@@ -32,6 +29,16 @@ update_status ModuleInput::Update()
 
     while (SDL_PollEvent(&sdlEvent) != 0)
     {
+        if (sdlEvent.button.x != mouseX || sdlEvent.button.y != mouseY)
+            mouseMotion = true;
+        else
+            mouseMotion = false;
+
+        if (file != sdlEvent.drop.file)
+            fileChange = true;
+        else
+            fileChange = false;
+
         switch (sdlEvent.type)
         {
             case SDL_QUIT:
@@ -42,13 +49,34 @@ update_status ModuleInput::Update()
                     App->GetRenderer()->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
                 break;
 
+            case SDL_DROPFILE:
+                if(sdlEvent.drop.file != nullptr){
+                    string sFile = sdlEvent.drop.file;
+                    const char* cFile = sFile.substr(sFile.length() - 4, sFile.length() - 1).c_str();
+
+                    if(strcmp(cFile, ".fbx"))
+                        fbxFile = sdlEvent.drop.file;
+                    else if(strcmp(cFile, ".png"))
+                        pngFile = sdlEvent.drop.file;
+                    else if(strcmp(cFile, ".dds"))
+                        ddsFile = sdlEvent.drop.file;
+                }
+
+                break;
+
             case SDL_MOUSEBUTTONDOWN:
+                if (sdlEvent.button.button == SDL_BUTTON_RIGHT)
+                    mouseDown = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
+                if(sdlEvent.button.button == SDL_BUTTON_RIGHT)
+                    mouseDown = false;
                 break;
 
             case SDL_MOUSEMOTION:
+                mouseX = sdlEvent.button.x;
+                mouseY = sdlEvent.button.y;
                 break;
 
             case SDL_MOUSEWHEEL:
@@ -71,9 +99,39 @@ bool ModuleInput::CleanUp()
 	return true;
 }
 
+bool ModuleInput::GetMouseDown() const
+{
+    return mouseDown;
+}
+
+bool ModuleInput::GetMouseMotion() const
+{
+    return mouseMotion;
+}
+
+float ModuleInput::GetMouseX() const
+{
+    return mouseX;
+}
+
+float ModuleInput::GetMouseY() const
+{
+    return mouseY;
+}
+
 int ModuleInput::GetMouseWheel() const
 {
     return mouseWheel;
+}
+
+bool ModuleInput::GetFileChange() const
+{
+    return fileChange;
+}
+
+char* ModuleInput::GetFile() const
+{
+    return file;
 }
 
 bool ModuleInput::Scroll()

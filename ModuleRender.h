@@ -3,9 +3,7 @@
 #include "Globals.h"
 #include "Module.h"
 #include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleDebugDraw.h"
-#include "ShadersProgram.h"
+#include "DebugDraw.h"
 #include "Model.h"
 
 #include "SDL.h"
@@ -45,6 +43,11 @@ public:
 	void Draw();
 
 private:
+	const float square_grid_mins = -50.0f;
+	const float square_grid_maxs = 50.0f;
+	const float square_grid_y = 0.0f;
+	const float square_grid_step = 1.0f;
+
 	void *context;
 	int width, height;
 	unsigned int VBO;

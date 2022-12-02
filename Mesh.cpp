@@ -8,7 +8,12 @@ Mesh::~Mesh()
 
 void Mesh::LoadVBO(const aiMesh* mesh)
 {
+	unsigned vbo;
+
 	glGenBuffers(1, &vbo);
+
+	this->vbo.push_back(vbo);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	unsigned vertex_size = (sizeof(float) * 3 + sizeof(float) * 2);
@@ -37,7 +42,12 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 
 void Mesh::LoadEBO(const aiMesh* mesh)
 {
+	unsigned ebo;
+
 	glGenBuffers(1, &ebo);
+
+	this->ebo.push_back(ebo);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
 	unsigned index_size = sizeof(unsigned) * mesh->mNumFaces * indices_per_face;
@@ -59,12 +69,17 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 	num_indices = mesh->mNumFaces * indices_per_face;
 }
 
-void Mesh::CreateVAO()
+void Mesh::CreateVAO(int index)
 {
+	unsigned vao;
+
 	glGenVertexArrays(1, &vao);
+
+	this->vao.push_back(vao);
+
 	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[index]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[index]);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
@@ -78,16 +93,21 @@ void Mesh::Draw(const vector<unsigned>& model_textures, const float4x4& model)
 	const float4x4& proj = App->GetCamera()->GetFrustum().ProjectionMatrix();
 
 	glUseProgram(program);
-	glUniformMatrix4fv(glGetUniformLocation(program, "model"), 4, GL_TRUE, (const float*)&model);
-	glUniformMatrix4fv(glGetUniformLocation(program, "view"), 3, GL_TRUE, (const float*)&view);
-	glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 2, GL_TRUE, (const float*)&proj);
+	glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_TRUE, (const float*)&model);
+	glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_TRUE, (const float*)&view);
+	glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 1, GL_TRUE, (const float*)&proj);
 	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, model_textures[0]);
 
 	glUniform1i(glGetUniformLocation(program, "diffuse"), 0);
-	glBindVertexArray(vao);
 
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
+	for (unsigned i = 0; i < vao.size(); ++i)
+	{
+		glBindVertexArray(vao[i]);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[i]);
+
+		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
+	}
 }
 
