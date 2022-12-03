@@ -80,7 +80,7 @@ bool ModuleCamera::CleanUp()
 
 void ModuleCamera::SetHorizontalFov(float horizontalFov)
 {
-	this->horizontalFov -= horizontalFov;
+	this->horizontalFov -= horizontalFov * App->GetSimpleDeltaTime();
 
 	if (this->horizontalFov < min_horizontal_fov)
 		this->horizontalFov = min_horizontal_fov;
@@ -90,22 +90,22 @@ void ModuleCamera::SetHorizontalFov(float horizontalFov)
 
 void ModuleCamera::MoveFront()
 {
-	pos = pos + frustum.Front() * movementSpeed;
+	pos = pos + frustum.Front() * movementSpeed * App->GetSimpleDeltaTime();
 }
 
 void ModuleCamera::MoveBack()
 {
-	pos = pos - frustum.Front() * movementSpeed;
+	pos = pos - frustum.Front() * movementSpeed * App->GetSimpleDeltaTime();
 }
 
 void ModuleCamera::MoveRight()
 {
-	pos = pos + frustum.WorldRight() * movementSpeed;
+	pos = pos + frustum.WorldRight() * movementSpeed * App->GetSimpleDeltaTime();
 }
 
 void ModuleCamera::MoveLeft()
 {
-	pos = pos - frustum.WorldRight() * movementSpeed;
+	pos = pos - frustum.WorldRight() * movementSpeed * App->GetSimpleDeltaTime();
 }
 
 void ModuleCamera::Zoom()

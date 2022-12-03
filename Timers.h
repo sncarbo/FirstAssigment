@@ -21,6 +21,10 @@ public:
 private:
 	bool quitSimpleTimer;
 	bool quitPerformanceTimer;
-	Uint32 simpleTimer;
-	Uint64 performanceTimer;
+
+	Uint32 startSimpleTimer;
+	Uint32 lastSimpleTimer;
+
+	Uint64 startPerformanceTimer;
+	Uint64 lastPerformanceTimer;
 };

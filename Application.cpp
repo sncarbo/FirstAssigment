@@ -11,6 +11,8 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(debugDraw = new ModuleDebugDraw());
 	modules.push_back(editor = new ModuleEditor());
+
+	timer = new Timers();
 }
 
 Application::~Application()
@@ -45,6 +47,8 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
+	timer->StartSimpleTimer();
+
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		ret = (*it)->PreUpdate();
 
@@ -53,6 +57,8 @@ update_status Application::Update()
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		ret = (*it)->PostUpdate();
+
+	deltaTime = timer->ReadSimpleTimer() / toSeconds;
 
 	return ret;
 }
@@ -100,4 +106,9 @@ ModuleDebugDraw* Application::GetDebugDraw() const
 ModuleTexture* Application::GetTextures() const
 {
 	return textures;
+}
+
+const float Application::GetSimpleDeltaTime() const
+{
+	return deltaTime;
 }

@@ -1,8 +1,7 @@
 #include "ModuleInput.h"
 
 ModuleInput::ModuleInput() : keyboard(NULL), mouseDown(false), mouseMotion(false), 
-                                mouseX(0.0), mouseY(0.0), mouseWheel(0), fileChange(false), 
-                                fbxFile(nullptr), pngFile(nullptr), ddsFile(nullptr)
+                                mouseX(0.0), mouseY(0.0), mouseWheel(0)
 {}
 
 ModuleInput::~ModuleInput()
@@ -34,11 +33,6 @@ update_status ModuleInput::Update()
         else
             mouseMotion = false;
 
-        if (fbxFile != sdlEvent.drop.file)
-            fileChange = true;
-        else
-            fileChange = false;
-
         switch (sdlEvent.type)
         {
             case SDL_QUIT:
@@ -51,15 +45,16 @@ update_status ModuleInput::Update()
 
             case SDL_DROPFILE:
                 if(sdlEvent.drop.file != nullptr){
-                    string sFile = sdlEvent.drop.file;
-                    const char* cFile = sFile.substr(sFile.length() - 4, sFile.length() - 1).c_str();
+                    const char * sFile = sdlEvent.drop.file;
+                    char* cFile = new char[4];
+                    memcpy(cFile, &sFile[strlen(sFile) - 4], 4);
 
-                    if(strcmp(cFile, ".fbx"))
-                        fbxFile = sdlEvent.drop.file;
+                    if (strcmp(cFile, ".fbx"))
+                        App->GetRenderer()->SetModel(sdlEvent.drop.file);
                     else if(strcmp(cFile, ".png"))
-                        pngFile = sdlEvent.drop.file;
+                        App->GetRenderer()->SetTexture(sdlEvent.drop.file);
                     else if(strcmp(cFile, ".dds"))
-                        ddsFile = sdlEvent.drop.file;
+                        App->GetRenderer()->SetTexture(sdlEvent.drop.file);
                 }
 
                 break;
@@ -122,16 +117,6 @@ float ModuleInput::GetMouseY() const
 int ModuleInput::GetMouseWheel() const
 {
     return mouseWheel;
-}
-
-bool ModuleInput::GetFileChange() const
-{
-    return fileChange;
-}
-
-char* ModuleInput::GetFile() const
-{
-    return fbxFile;
 }
 
 bool ModuleInput::Scroll()

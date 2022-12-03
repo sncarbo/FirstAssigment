@@ -92,6 +92,16 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+void ModuleRender::SetModel(const char* path)
+{
+	model->Load(path);
+}
+
+void ModuleRender::SetTexture(const char* path)
+{
+	model->LoadMaterials(nullptr, path);
+}
+
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 	this->width = width;

@@ -1,62 +1,50 @@
 #include "Model.h"
 #include <iostream>
 
-Model::Model() : modelPath("./BakerHouse/BakerHouse.fbx")
+const char* Model::modelPath = "Models/BakerHouse.fbx";
+
+Model::Model()
 {}
 
 Model::~Model()
 {}
 
-void Model::Load()
+void Model::Load(const char* path, const char* texturePath)
 {
-	if (modelPath != nullptr)
+	if (path != nullptr)
 	{
-		scene = aiImportFile(modelPath, aiProcessPreset_TargetRealtime_MaxQuality);
+		scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 		if (scene)
 		{
-			LoadMaterials();
+			LoadMaterials(path, texturePath);
 			LoadMeshes();
 		}
 		else
 		{
-			LOG2("Error loading %s: %s", modelPath, aiGetErrorString());
+			LOG2("Error loading %s: %s", path, aiGetErrorString());
 		}
 	}
 }
 
-void Model::LoadMaterials()
+void Model::LoadMaterials(const char* path, const char* texturePath)
 {
-	aiString file;
-
-	if(scene->mNumMaterials == 1)
+	if (path != nullptr)
 	{
-		if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
+		if (texturePath == nullptr)
 		{
-			char* absolute_path = new char[MAX_PATH];
-			GetFullPathName(file.data, MAX_PATH, absolute_path, nullptr);
-			
-			char* path = new char[MAX_PATH];
-			unsigned index = 0;
+			aiString file;
 
-			while (absolute_path[index] != string::npos)
+			if (scene->mNumMaterials == 1)
 			{
-				if (absolute_path[index] == '\\\\')
+				if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 				{
-					path[index] = '\\';
-					index ++;
+					material = App->GetTextures()->LoadTexture(modelPath, file.data);
 				}
-				else
-				{
-					path[index] = absolute_path[index];
-					++index;
-				}				
 			}
-
-			App->GetTextures()->SetTexturePath(absolute_path);
-
-			material = App->GetTextures()->LoadTexture();
 		}
+		else
+			material = App->GetTextures()->LoadTexture(modelPath, texturePath);
 	}
 }
 
@@ -70,11 +58,6 @@ void Model::LoadMeshes()
 		mesh->LoadEBO(scene->mMeshes[i]);
 		mesh->CreateVAO(i);
 	}
-}
-
-void Model::SetModelPath(const char* modelPath)
-{
-	this->modelPath = modelPath;
 }
 
 Mesh* Model::GetMesh() const

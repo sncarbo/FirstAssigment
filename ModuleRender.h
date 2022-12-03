@@ -31,11 +31,8 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void RenderVBO(unsigned vbo, unsigned program);
-
-	float4x4 GetModelMatrix() const;
-	float4x4 GetViewMatrix() const;
-	float4x4 GetProjectionMatrix() const;
+	void SetModel(const char * path);
+	void SetTexture(const char* path);
 
 	void WindowResized(unsigned width, unsigned height);
 	void* GetContext();

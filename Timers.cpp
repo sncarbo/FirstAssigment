@@ -1,20 +1,23 @@
 #include "Timers.h"
 
-Timers::Timers():quitSimpleTimer(true), simpleTimer(0), quitPerformanceTimer(true), performanceTimer(0.0) {}
+Timers::Timers():quitSimpleTimer(true), startSimpleTimer(0), lastSimpleTimer(0),
+					quitPerformanceTimer(true), startPerformanceTimer(0.0), lastPerformanceTimer(0.0)
+{}
 
 Timers::~Timers() {}
 
 void Timers::StartSimpleTimer()
 {
+	startSimpleTimer = SDL_GetTicks();
 	quitSimpleTimer = false;
 }
 
 Uint32 Timers::ReadSimpleTimer()
 {
 	if(!quitSimpleTimer)
-		simpleTimer = SDL_GetTicks();
+		lastSimpleTimer = SDL_GetTicks() - startSimpleTimer;
 
-	return simpleTimer;
+	return lastSimpleTimer;
 }
 
 void Timers::StopSimpleTimer()
@@ -29,15 +32,16 @@ Uint64 Timers::ReadPerformanceFrequency()
 
 void Timers::StartPerformanceTimer()
 {
+	startPerformanceTimer = SDL_GetPerformanceCounter();
 	quitPerformanceTimer = false;
 }
 
 Uint64 Timers::ReadPerformanceTimer()
 {
 	if (!quitPerformanceTimer)
-		performanceTimer = SDL_GetPerformanceCounter();
+		lastPerformanceTimer = SDL_GetPerformanceCounter() - startPerformanceTimer;
 
-	return performanceTimer;
+	return lastPerformanceTimer;
 }
 
 void Timers::StopPerformanceTimer()

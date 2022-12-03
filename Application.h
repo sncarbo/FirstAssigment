@@ -11,6 +11,8 @@
 #include "ModuleDebugDraw.h"
 #include "ModuleTexture.h"
 
+#include "Timers.h"
+
 using namespace std;
 
 class ModuleWindow;
@@ -21,6 +23,7 @@ class ModuleInput;
 class ModuleEditor;
 class ModuleDebugDraw;
 class ModuleTexture;
+class Timers;
 
 class Application
 {
@@ -42,6 +45,8 @@ public:
 	ModuleDebugDraw *GetDebugDraw() const;
 	ModuleTexture *GetTextures() const;
 
+	const float GetSimpleDeltaTime() const;
+
 private:
 	list<Module*> modules;
 
@@ -52,6 +57,11 @@ private:
 	ModuleInput *input;
 	ModuleDebugDraw *debugDraw;
 	ModuleTexture *textures;
+
+	const float toSeconds = 1000.0;
+
+	Timers* timer;
+	float deltaTime;
 };
 
 extern Application* App;

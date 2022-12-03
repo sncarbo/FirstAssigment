@@ -2,10 +2,10 @@
 #include "Globals.h"
 #include "Module.h"
 #include "Application.h"
-#include "ModuleInput.h"
-#include "ModuleWindow.h"
+
 #include "SDL.h"
 #include "glew.h"
+
 #include "Geometry/Frustum.h"
 #include "Math/float3x3.h"
 
@@ -40,8 +40,8 @@ public:
 
 private:
 	const float min_horizontal_fov = 1.0;
-	const float max_horizontal_fov = 15.0;
-	const float normal_movement_speed = 0.015625;
+	const float max_horizontal_fov = 2.0;
+	const float normal_movement_speed = 3;
 
 	Frustum frustum;
 

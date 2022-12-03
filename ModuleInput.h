@@ -43,8 +43,4 @@ private:
 	bool mouseMotion;
 	float mouseX, mouseY;
 	int mouseWheel;
-	bool fileChange;
-	char *fbxFile;
-	char* pngFile;
-	char* ddsFile;
 };

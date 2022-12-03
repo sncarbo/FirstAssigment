@@ -9,9 +9,7 @@
 #include "assimp/cimport.h"
 #include "assimp/postprocess.h"
 
-#include <windows.h>
 #include <vector>
-#include <regex>
 
 using namespace std;
 
@@ -23,17 +21,16 @@ class Model
 		Model();
 		~Model();
 
-		void Load();
+		void Load(const char* path = modelPath, const char* texturePath = nullptr);
 		void LoadMeshes();
-		void LoadMaterials();
-
-		void SetModelPath(const char* modelPath);
+		void LoadMaterials(const char* path = modelPath, const char* texturePath = nullptr);
 
 		Mesh* GetMesh() const;
 		unsigned GetMaterial() const;
 	private:
+		static const char* modelPath;
+
 		const aiScene *scene;
 		Mesh *mesh;
 		unsigned material;
-		const char* modelPath;
 };
