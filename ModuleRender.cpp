@@ -43,7 +43,7 @@ bool ModuleRender::Init()
 	InitGlew();
 
 	model = new Model();
-	model->Load("./baker_house_model/BakerHouse.fbx");
+	model->Load();
 
 	program = new ShadersProgram();
 
@@ -110,7 +110,7 @@ ShadersProgram* ModuleRender::GetProgram()
 
 void ModuleRender::Draw()
 {
-	model->GetMesh()->Draw(model->GetMaterials(), float4x4::identity);
+	model->GetMesh()->Draw(model->GetMaterial(), float4x4::identity);
 }
 
 

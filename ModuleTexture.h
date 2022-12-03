@@ -22,14 +22,14 @@ class ModuleTexture : public Module
 
 		GLuint LoadTexture();
 
-		void SetTexturePath(char* texturePath);
+		void SetTexturePath(const char* texturePath);
 
-		char* GetTexturePath() const;
+		const char* GetTexturePath() const;
 		TexMetadata& GetInfo();
 
 	private:
 		const Image* texture;
-		char* texturePath;
+		const char* texturePath;
 		GLuint textureId;
 		TexMetadata info;
 };

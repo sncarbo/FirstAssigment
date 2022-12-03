@@ -86,7 +86,7 @@ void Mesh::CreateVAO(int index)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * num_vertices));
 }
 
-void Mesh::Draw(const vector<unsigned>& model_textures, const float4x4& model)
+void Mesh::Draw(const unsigned& model_texture, const float4x4& model)
 {
 	unsigned program = App->GetRenderer()->GetProgram()->GetShaderProgramId();;
 	const float4x4& view = App->GetCamera()->GetFrustum().ViewMatrix();
@@ -98,7 +98,7 @@ void Mesh::Draw(const vector<unsigned>& model_textures, const float4x4& model)
 	glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 1, GL_TRUE, (const float*)&proj);
 	
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model_textures[0]);
+	glBindTexture(GL_TEXTURE_2D, model_texture);
 
 	glUniform1i(glGetUniformLocation(program, "diffuse"), 0);
 

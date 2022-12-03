@@ -34,7 +34,7 @@ update_status ModuleInput::Update()
         else
             mouseMotion = false;
 
-        if (file != sdlEvent.drop.file)
+        if (fbxFile != sdlEvent.drop.file)
             fileChange = true;
         else
             fileChange = false;
@@ -131,7 +131,7 @@ bool ModuleInput::GetFileChange() const
 
 char* ModuleInput::GetFile() const
 {
-    return file;
+    return fbxFile;
 }
 
 bool ModuleInput::Scroll()

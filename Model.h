@@ -9,7 +9,9 @@
 #include "assimp/cimport.h"
 #include "assimp/postprocess.h"
 
+#include <windows.h>
 #include <vector>
+#include <regex>
 
 using namespace std;
 
@@ -25,13 +27,13 @@ class Model
 		void LoadMeshes();
 		void LoadMaterials();
 
-		void SetModelPath(char* modelPath);
+		void SetModelPath(const char* modelPath);
 
 		Mesh* GetMesh() const;
-		vector<unsigned>& GetMaterials();
+		unsigned GetMaterial() const;
 	private:
 		const aiScene *scene;
 		Mesh *mesh;
-		vector<unsigned> materials;
-		char* modelPath;
+		unsigned material;
+		const char* modelPath;
 };

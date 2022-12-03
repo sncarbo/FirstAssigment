@@ -92,12 +92,12 @@ GLuint ModuleTexture::LoadTexture()
 	return textureId;
 }
 
-void ModuleTexture::SetTexturePath(char* texturePath)
+void ModuleTexture::SetTexturePath(const char* texturePath)
 {
 	this->texturePath = texturePath;
 }
 
-char* ModuleTexture::GetTexturePath() const
+const char* ModuleTexture::GetTexturePath() const
 {
 	return texturePath;
 }

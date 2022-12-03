@@ -23,7 +23,7 @@ class Mesh
 		void LoadVBO(const aiMesh* mesh);
 		void LoadEBO(const aiMesh* mesh);
 		void CreateVAO(int index);
-		void Draw(const vector<unsigned>& model_textures, const float4x4& model);
+		void Draw(const unsigned& model_texture, const float4x4& model);
 
 	private:
 		const unsigned indices_per_face = 3;

@@ -2,6 +2,14 @@
 
 ModuleCamera::ModuleCamera()
 {
+}
+
+ModuleCamera::~ModuleCamera()
+{
+}
+
+bool ModuleCamera::Init()
+{
 	frustumProjectiveSpace = FrustumSpaceGL;
 	frustumHandedness = FrustumRightHanded;
 	nearPlane = 0.1f;
@@ -12,14 +20,7 @@ ModuleCamera::ModuleCamera()
 	front = float3::unitZ;
 	up = float3::unitY;
 	movementSpeed = normal_movement_speed;
-}
 
-ModuleCamera::~ModuleCamera()
-{
-}
-
-bool ModuleCamera::Init()
-{
 	frustum.SetKind(frustumProjectiveSpace, frustumHandedness);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
