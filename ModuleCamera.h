@@ -21,6 +21,10 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void CalculateMovementSpeed();
+	void CalculateMouseDownDerivatives();
+	void CalculateMouseWheelDerivatives();
+
 	void SetHorizontalFov(float horizontalFov);
 
 	void MoveFront();
@@ -56,4 +60,7 @@ private:
 	float3 up;
 
 	float movementSpeed;
+	float rotationSpeed;
+
+	float3x3 rotationDeltaMatrix;
 };

@@ -20,6 +20,8 @@ bool ModuleCamera::Init()
 	front = float3::unitZ;
 	up = float3::unitY;
 	movementSpeed = normal_movement_speed;
+	rotationSpeed = 10.0f;
+	rotationDeltaMatrix = float3x3::identity;
 
 	frustum.SetKind(frustumProjectiveSpace, frustumHandedness);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
@@ -40,28 +42,10 @@ update_status ModuleCamera::PreUpdate()
 
 update_status ModuleCamera::Update()
 {
-	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_LSHIFT) || App->GetInput()->CheckScanCode(SDL_SCANCODE_RSHIFT))
-		DuplicateMovementSpeed();
-	else
-		NormalMovementSpeed();
+	CalculateMovementSpeed();
+	CalculateMouseDownDerivatives();
 
-	if(App->GetInput()->GetMouseDown())
-	{
-		if (App->GetInput()->GetMouseMotion())
-			//RotateCamera(float3x3 rotationDeltaMatrix);
-
-		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_W))
-			MoveFront();
-		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_S))
-			MoveBack();
-		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_A))
-			MoveLeft();
-		else if (App->GetInput()->CheckScanCode(SDL_SCANCODE_D))
-			MoveRight();
-	}
-
-	if (App->GetInput()->Scroll())
-		Zoom();
+	
 
 	UpdateFrustumParameters();
 	
@@ -76,6 +60,51 @@ update_status ModuleCamera::PostUpdate()
 bool ModuleCamera::CleanUp()
 {
 	return true;
+}
+
+void ModuleCamera::CalculateMovementSpeed()
+{
+	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_LSHIFT) || App->GetInput()->CheckScanCode(SDL_SCANCODE_RSHIFT))
+		DuplicateMovementSpeed();
+	else
+		NormalMovementSpeed();
+}
+
+void ModuleCamera::CalculateMouseDownDerivatives()
+{
+	if (App->GetInput()->GetMouseDown())
+	{
+		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_W))
+			MoveFront();
+		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_S))
+			MoveBack();
+		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_A))
+			MoveLeft();
+		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_D))
+			MoveRight();
+
+		if (App->GetInput()->GetMouseMotionX() || App->GetInput()->GetMouseMotionY())
+		{
+
+			if (App->GetInput()->GetMouseMotionX())
+			{
+				rotationDeltaMatrix = rotationDeltaMatrix * frustum.ViewMatrix().RotatePart().RotateY(DegToRad(App->GetInput()->GetMouseX() * rotationSpeed * App->GetSimpleDeltaTime()));
+			}
+
+			if (App->GetInput()->GetMouseMotionY())
+			{
+				rotationDeltaMatrix = rotationDeltaMatrix * frustum.ViewMatrix().RotatePart().RotateAxisAngle(frustum.WorldRight(), DegToRad(App->GetInput()->GetMouseY() * rotationSpeed * App->GetSimpleDeltaTime()));
+			}
+
+			RotateCamera(rotationDeltaMatrix);
+		}
+	}
+}
+
+void ModuleCamera::CalculateMouseWheelDerivatives()
+{
+	if (App->GetInput()->Scroll())
+		Zoom();
 }
 
 void ModuleCamera::SetHorizontalFov(float horizontalFov)
@@ -144,10 +173,12 @@ void ModuleCamera::UpdateFrustumParameters()
 void ModuleCamera::RotateCamera(float3x3 rotationDeltaMatrix)
 {
 	vec oldFront = frustum.Front().Normalized();
-	frustum.SetFront(rotationDeltaMatrix * oldFront);
+	front = rotationDeltaMatrix * oldFront;
 
 	vec oldUp = frustum.Up().Normalized();
-	frustum.SetUp(rotationDeltaMatrix * oldUp);
+	up = rotationDeltaMatrix * oldUp;
+
+	this->rotationDeltaMatrix = float3x3::identity;
 }
 
 Frustum ModuleCamera::GetFrustum() const

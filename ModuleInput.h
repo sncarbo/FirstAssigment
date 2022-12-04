@@ -23,12 +23,11 @@ public:
 	bool CleanUp();
 
 	bool GetMouseDown() const;
-	bool GetMouseMotion() const;
 	float GetMouseX() const;
 	float GetMouseY() const;
+	bool GetMouseMotionX() const;
+	bool GetMouseMotionY() const;
 	int GetMouseWheel() const;
-	bool GetFileChange() const;
-	char* GetFile() const;
 
 	bool Scroll();
 
@@ -40,7 +39,6 @@ private:
 
 	const Uint8 *keyboard;
 	bool mouseDown;
-	bool mouseMotion;
 	float mouseX, mouseY;
 	int mouseWheel;
 };

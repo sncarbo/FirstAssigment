@@ -1,6 +1,6 @@
 #include "ModuleInput.h"
 
-ModuleInput::ModuleInput() : keyboard(NULL), mouseDown(false), mouseMotion(false), 
+ModuleInput::ModuleInput() : keyboard(NULL), mouseDown(false), 
                                 mouseX(0.0), mouseY(0.0), mouseWheel(0)
 {}
 
@@ -28,10 +28,9 @@ update_status ModuleInput::Update()
 
     while (SDL_PollEvent(&sdlEvent) != 0)
     {
-        if (sdlEvent.button.x != mouseX || sdlEvent.button.y != mouseY)
-            mouseMotion = true;
-        else
-            mouseMotion = false;
+        mouseWheel = 0;
+        mouseX = 0.0f;
+        mouseY = 0.0f;
 
         switch (sdlEvent.type)
         {
@@ -70,8 +69,8 @@ update_status ModuleInput::Update()
                 break;
 
             case SDL_MOUSEMOTION:
-                mouseX = sdlEvent.button.x;
-                mouseY = sdlEvent.button.y;
+                mouseX = sdlEvent.motion.xrel;
+                mouseY = sdlEvent.motion.yrel;
                 break;
 
             case SDL_MOUSEWHEEL:
@@ -99,11 +98,6 @@ bool ModuleInput::GetMouseDown() const
     return mouseDown;
 }
 
-bool ModuleInput::GetMouseMotion() const
-{
-    return mouseMotion;
-}
-
 float ModuleInput::GetMouseX() const
 {
     return mouseX;
@@ -112,6 +106,16 @@ float ModuleInput::GetMouseX() const
 float ModuleInput::GetMouseY() const
 {
     return mouseY;
+}
+
+bool ModuleInput::GetMouseMotionX() const
+{
+    return (mouseX != 0.0);
+}
+
+bool ModuleInput::GetMouseMotionY() const
+{
+    return (mouseY != 0.0);
 }
 
 int ModuleInput::GetMouseWheel() const
