@@ -22,6 +22,7 @@ bool ModuleCamera::Init()
 	movementSpeed = normal_movement_speed;
 	rotationSpeed = 10.0f;
 	rotationDeltaMatrix = float3x3::identity;
+	center = float3(0.0f, 0.0f, 0.0f);
 
 	frustum.SetKind(frustumProjectiveSpace, frustumHandedness);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
@@ -44,9 +45,8 @@ update_status ModuleCamera::Update()
 {
 	CalculateMovementSpeed();
 	CalculateMouseDownDerivatives();
-
-	
-
+	CalculateAuxiliaryDerivatives();
+	CalculateMouseWheelDerivatives();
 	UpdateFrustumParameters();
 	
 	return UPDATE_CONTINUE;
@@ -72,7 +72,7 @@ void ModuleCamera::CalculateMovementSpeed()
 
 void ModuleCamera::CalculateMouseDownDerivatives()
 {
-	if (App->GetInput()->GetMouseDown())
+	if (App->GetInput()->GetRightMouseDown())
 	{
 		if (App->GetInput()->CheckScanCode(SDL_SCANCODE_W))
 			MoveFront();
@@ -101,6 +101,16 @@ void ModuleCamera::CalculateMouseDownDerivatives()
 	}
 }
 
+void ModuleCamera::CalculateAuxiliaryDerivatives()
+{
+	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_F))
+		Focus();
+	
+	if ((App->GetInput()->CheckScanCode(SDL_SCANCODE_LALT) || App->GetInput()->CheckScanCode(SDL_SCANCODE_RALT))
+		&& App->GetInput()->GetLeftMouseDown())
+		Orbit();
+}
+
 void ModuleCamera::CalculateMouseWheelDerivatives()
 {
 	if (App->GetInput()->Scroll())
@@ -109,7 +119,7 @@ void ModuleCamera::CalculateMouseWheelDerivatives()
 
 void ModuleCamera::SetHorizontalFov(float horizontalFov)
 {
-	this->horizontalFov -= horizontalFov * App->GetSimpleDeltaTime();
+	this->horizontalFov += -horizontalFov * App->GetSimpleDeltaTime();
 
 	if (this->horizontalFov < min_horizontal_fov)
 		this->horizontalFov = min_horizontal_fov;
@@ -144,12 +154,16 @@ void ModuleCamera::Zoom()
 
 void ModuleCamera::Orbit()
 {
+	pos = ((pos - center) * frustum.ViewMatrix().RotatePart().RotateAxisAngle(up.Normalized(), DegToRad(App->GetInput()->GetMouseX() * rotationSpeed * App->GetSimpleDeltaTime()))
+		* frustum.ViewMatrix().RotatePart().RotateAxisAngle(frustum.WorldRight().Normalized(), DegToRad(App->GetInput()->GetMouseY()) * rotationSpeed * App->GetSimpleDeltaTime()));
 
+	RotateCamera(float3x3::LookAt(frustum.Front(), (center - pos).Normalized(), frustum.Up(), float3::unitY));
 }
 
 void ModuleCamera::Focus()
 {
-
+	center = App->GetRenderer()->GetModel()->GetCenter();
+	RotateCamera(float3x3::LookAt(frustum.Front(), (center - pos).Normalized(), frustum.Up(), float3::unitY));
 }
 
 void ModuleCamera::NormalMovementSpeed()

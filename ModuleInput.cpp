@@ -1,6 +1,6 @@
 #include "ModuleInput.h"
 
-ModuleInput::ModuleInput() : keyboard(NULL), mouseDown(false), 
+ModuleInput::ModuleInput() : keyboard(NULL), leftMouseDown(false), rightMouseDown(false),
                                 mouseX(0.0), mouseY(0.0), mouseWheel(0)
 {}
 
@@ -59,13 +59,19 @@ update_status ModuleInput::Update()
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                if (sdlEvent.button.button == SDL_BUTTON_LEFT)
+                    leftMouseDown = true;
+
                 if (sdlEvent.button.button == SDL_BUTTON_RIGHT)
-                    mouseDown = true;
+                    rightMouseDown = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                if(sdlEvent.button.button == SDL_BUTTON_RIGHT)
-                    mouseDown = false;
+                if (sdlEvent.button.button == SDL_BUTTON_LEFT)
+                    leftMouseDown = false;
+
+                if (sdlEvent.button.button == SDL_BUTTON_RIGHT)
+                    rightMouseDown = false;
                 break;
 
             case SDL_MOUSEMOTION:
@@ -93,9 +99,14 @@ bool ModuleInput::CleanUp()
 	return true;
 }
 
-bool ModuleInput::GetMouseDown() const
+bool ModuleInput::GetLeftMouseDown() const
 {
-    return mouseDown;
+    return leftMouseDown;
+}
+
+bool ModuleInput::GetRightMouseDown() const
+{
+    return rightMouseDown;
 }
 
 float ModuleInput::GetMouseX() const

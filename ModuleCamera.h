@@ -23,6 +23,7 @@ public:
 
 	void CalculateMovementSpeed();
 	void CalculateMouseDownDerivatives();
+	void CalculateAuxiliaryDerivatives();
 	void CalculateMouseWheelDerivatives();
 
 	void SetHorizontalFov(float horizontalFov);
@@ -63,4 +64,6 @@ private:
 	float rotationSpeed;
 
 	float3x3 rotationDeltaMatrix;
+
+	float3 center;
 };

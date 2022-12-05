@@ -1,6 +1,7 @@
 #include "ModuleWindow.h"
 
-ModuleWindow::ModuleWindow() : width(SCREEN_WIDTH), height(SCREEN_HEIGHT)
+ModuleWindow::ModuleWindow() : window(nullptr), screenSurface(nullptr), displayProportions(SDL_DisplayMode()),
+								width(0.0f), height(0.0f)
 {}
 
 ModuleWindow::~ModuleWindow()
@@ -18,8 +19,17 @@ bool ModuleWindow::Init()
 	}
 	else
 	{
-		width = SCREEN_WIDTH;
-		height = SCREEN_HEIGHT;
+		if (SDL_GetDesktopDisplayMode(0, &displayProportions) == 0)
+		{
+			width = 3.0f * displayProportions.w / 4.0f;
+			height = 3.0f * displayProportions.h / 4.0f;
+		}
+		else
+		{
+			width = SCREEN_WIDTH;
+			height = SCREEN_HEIGHT;
+		}
+
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 
 		if(FULLSCREEN == true)
@@ -36,7 +46,7 @@ bool ModuleWindow::Init()
 		}
 		else
 		{	
-			screen_surface = SDL_GetWindowSurface(window);
+			screenSurface = SDL_GetWindowSurface(window);
 		}
 	}
 

@@ -27,5 +27,6 @@ public:
 	bool CleanUp();
 
 private:
-	bool showCase;
+
+	ImGuiIO io;
 };

@@ -44,9 +44,6 @@ GLuint ModuleTexture::LoadTexture(const char * modelPath, const char* texturePat
 
 		if (FAILED(hr))
 			hr = LoadFromWICFile(wpath_t, WIC_FLAGS_NONE, &info, auxImage);
-
-		delete wpath_t;
-		wpath_t = nullptr;
 	}
 
 	if (FAILED(hr))
@@ -61,47 +58,53 @@ GLuint ModuleTexture::LoadTexture(const char * modelPath, const char* texturePat
 		{
 			if (modelPath[lengthPath - 1] == '/')
 				loop = false;
-
-			--lengthPath;
+			else
+				--lengthPath;
 		}
 
 		lengthPath += strlen(texturePath);
 
-		char* path = new char(sizeof(lengthPath));
+		char* path = new char[lengthPath + 1];
+		path[lengthPath] = '\0';
 
-		lengthPath -= strlen(texturePath);
-
-		memcpy(path, modelPath, lengthPath + 1);
+		memcpy(path, modelPath, lengthPath - strlen(texturePath));
 
 		unsigned index = 0;
 
 		while (texturePath[index] != '\0')
 		{
-			path[++lengthPath] = texturePath[index];
+			path[lengthPath - strlen(texturePath) + index] = texturePath[index];
 			++index;
 		}
-		
-		wpath_t = new wchar_t;
 
-		mbstowcs(wpath_t, "Models/Baker_house.png", lengthPath + 1);
+		wchar_t* wpath_t2 = new wchar_t[lengthPath + 1];
 
-		HRESULT hr = LoadFromDDSFile(wpath_t, DDS_FLAGS_NONE, &info, auxImage);
+		mbstowcs(wpath_t2, path, lengthPath + 1);
+
+		hr = LoadFromDDSFile(wpath_t2, DDS_FLAGS_NONE, &info, auxImage);
 
 		if (FAILED(hr))
 		{
-			hr = LoadFromTGAFile(wpath_t, TGA_FLAGS_NONE, &info, auxImage);
+			hr = LoadFromTGAFile(wpath_t2, TGA_FLAGS_NONE, &info, auxImage);
 
 			if (FAILED(hr))
-				hr = LoadFromWICFile(wpath_t, WIC_FLAGS_NONE, &info, auxImage);
+				hr = LoadFromWICFile(wpath_t2, WIC_FLAGS_NONE, &info, auxImage);
 		}
-
-		delete wpath_t;
-		wpath_t = nullptr;
 	}
 
 	if (FAILED(hr))
 	{
 		LOG2("Third check: 'Textures/' folder");
+
+		const char* folderTextures = "Textures/";
+		char* texturesPath = new char[strlen(folderTextures) + strlen(texturePath) + 1];
+		texturesPath[strlen(folderTextures) + strlen(texturePath)] = '\0';
+
+		for (unsigned i = 0; i < strlen(folderTextures); ++i)
+			texturesPath[i] = folderTextures[i];
+
+		for (unsigned i = strlen(folderTextures); i < (strlen(folderTextures) + strlen(texturePath)); ++i)
+			texturesPath[i] = texturePath[i];
 
 		HRESULT hr = LoadFromDDSFile(wpath_t, DDS_FLAGS_NONE, &info, auxImage);
 

@@ -22,15 +22,20 @@ class Model
 		~Model();
 
 		void Load(const char* path = modelPath, const char* texturePath = nullptr);
-		void LoadMeshes();
 		void LoadMaterials(const char* path = modelPath, const char* texturePath = nullptr);
+		void LoadMeshes();
+
+		void CalculateModelCenter();
 
 		Mesh* GetMesh() const;
 		unsigned GetMaterial() const;
+		float3 GetCenter() const;
 	private:
 		static const char* modelPath;
 
 		const aiScene *scene;
 		Mesh *mesh;
 		unsigned material;
+
+		float3 center;
 };

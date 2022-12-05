@@ -102,6 +102,11 @@ void ModuleRender::SetTexture(const char* path)
 	model->LoadMaterials(nullptr, path);
 }
 
+Model* ModuleRender::GetModel() const
+{
+	return model;
+}
+
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 	this->width = width;
@@ -113,7 +118,7 @@ void* ModuleRender::GetContext()
 	return context;
 }
 
-ShadersProgram* ModuleRender::GetProgram()
+ShadersProgram* ModuleRender::GetProgram() const
 {
 	return program;
 }

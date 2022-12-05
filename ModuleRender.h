@@ -34,9 +34,11 @@ public:
 	void SetModel(const char * path);
 	void SetTexture(const char* path);
 
+	Model* GetModel() const;
+
 	void WindowResized(unsigned width, unsigned height);
 	void* GetContext();
-	ShadersProgram* GetProgram();
+	ShadersProgram* GetProgram() const;
 	void Draw();
 
 private:

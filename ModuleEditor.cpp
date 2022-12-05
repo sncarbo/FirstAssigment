@@ -1,25 +1,20 @@
 #include "ModuleEditor.h"
 
-
 using namespace std;
 
 
 ModuleEditor::ModuleEditor()
-{
-
-}
+{}
 
 ModuleEditor::~ModuleEditor()
-{
-
-}
+{}
 
 bool ModuleEditor::Init()
 {
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
+	
 	return true;
 }
 
@@ -42,27 +37,40 @@ update_status ModuleEditor::PreUpdate()
 
 update_status ModuleEditor::Update()
 {
-	ImGui::Begin("About...");
+	ImGui::Begin("General Menu");
+	ImGui::Text("Engine Name: Sakuraba Engine");
+	ImGui::Text("Author: Santiago Carbo Garcia");
+	ImGui::End();
 
-	string title = "Engine name: ";
-	string aux(TITLE);
-	title += aux;
-	string author = "Author: Santiago Carbo Garcia";
+	ImGui::Begin("Configuration menu");
 
-	ImGui::Text(aux.c_str());
-	ImGui::Text(author.c_str());
-	//ImGui::PlotHistogram("##framerate")
+	ImGui::PlotHistogram("##framerate", nullptr, 0, 0, 0, "Frames Per Second", 0.0f, 100.0f, ImVec2(310, 100));
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Renderer variables"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O"))
+			{
+
+			}
+			
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
 
 	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleEditor::PostUpdate()
-{
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	
+{	
 	ImGui::UpdatePlatformWindows();
 	ImGui::RenderPlatformWindowsDefault();
 	SDL_GL_MakeCurrent(App->GetWindow()->window, App->GetRenderer()->GetContext());

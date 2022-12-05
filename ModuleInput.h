@@ -22,7 +22,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	bool GetMouseDown() const;
+	bool GetLeftMouseDown() const;
+	bool GetRightMouseDown() const;
 	float GetMouseX() const;
 	float GetMouseY() const;
 	bool GetMouseMotionX() const;
@@ -38,7 +39,8 @@ private:
 	const unsigned scrolling_down = 2;
 
 	const Uint8 *keyboard;
-	bool mouseDown;
+	bool leftMouseDown;
+	bool rightMouseDown;
 	float mouseX, mouseY;
 	int mouseWheel;
 };

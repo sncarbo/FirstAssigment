@@ -20,8 +20,9 @@ public:
 	float GetHeight() const;
 
 public:
-	SDL_Window* window = NULL;
-	SDL_Surface* screen_surface = NULL;
+	SDL_Window* window;
+	SDL_Surface* screenSurface;
+	SDL_DisplayMode displayProportions;
 
 	float width;
 	float height;
