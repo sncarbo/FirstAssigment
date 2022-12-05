@@ -14,6 +14,7 @@ public:
 	virtual ~ModuleWindow();
 
 	bool Init();
+	update_status Update();
 	bool CleanUp();
 
 	float GetWidth() const;

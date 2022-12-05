@@ -29,6 +29,7 @@ public:
 	bool GetMouseMotionX() const;
 	bool GetMouseMotionY() const;
 	int GetMouseWheel() const;
+	bool GetModelChange() const;
 
 	bool Scroll();
 
@@ -43,4 +44,6 @@ private:
 	bool rightMouseDown;
 	float mouseX, mouseY;
 	int mouseWheel;
+
+	bool modelChange;
 };

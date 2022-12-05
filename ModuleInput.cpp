@@ -1,7 +1,7 @@
 #include "ModuleInput.h"
 
 ModuleInput::ModuleInput() : keyboard(NULL), leftMouseDown(false), rightMouseDown(false),
-                                mouseX(0.0), mouseY(0.0), mouseWheel(0)
+                                mouseX(0.0), mouseY(0.0), mouseWheel(0), modelChange(false)
 {}
 
 ModuleInput::~ModuleInput()
@@ -26,12 +26,13 @@ update_status ModuleInput::Update()
 {
     SDL_Event sdlEvent;
 
+    mouseWheel = 0;
+    mouseX = 0.0f;
+    mouseY = 0.0f;
+    modelChange = false;
+
     while (SDL_PollEvent(&sdlEvent) != 0)
     {
-        mouseWheel = 0;
-        mouseX = 0.0f;
-        mouseY = 0.0f;
-
         switch (sdlEvent.type)
         {
             case SDL_QUIT:
@@ -58,11 +59,16 @@ update_status ModuleInput::Update()
                     }
 
                     if (strcmp(&cFile[strlen(sFile) - 4], ".fbx") == 0)
-                        App->GetRenderer()->SetModel(sdlEvent.drop.file);
+                    {
+                        App->GetRenderer()->SetModel(cFile);
+                        modelChange = true;
+                    }
                     else if(strcmp(&cFile[strlen(sFile) - 4], ".png") == 0)
-                        App->GetRenderer()->SetTexture(sdlEvent.drop.file);
+                        App->GetRenderer()->SetTexture(cFile);
+                    else if (strcmp(&cFile[strlen(sFile) - 4], ".jpg") == 0)
+                        App->GetRenderer()->SetTexture(cFile);
                     else if(strcmp(&cFile[strlen(sFile) - 4], ".dds") == 0)
-                        App->GetRenderer()->SetTexture(sdlEvent.drop.file);
+                        App->GetRenderer()->SetTexture(cFile);
                 }
 
                 break;
@@ -141,6 +147,11 @@ bool ModuleInput::GetMouseMotionY() const
 int ModuleInput::GetMouseWheel() const
 {
     return mouseWheel;
+}
+
+bool ModuleInput::GetModelChange() const
+{
+    return modelChange;
 }
 
 bool ModuleInput::Scroll()

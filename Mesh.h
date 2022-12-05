@@ -25,9 +25,13 @@ class Mesh
 		void CreateVAO(int index);
 		void Draw(const unsigned& model_texture, const float4x4& model);
 
+		float3 GetMaxProportions() const;
+
 	private:
 		const unsigned indices_per_face = 3;
 
 		vector<unsigned> vbo, ebo, vao;
 		unsigned num_vertices, num_indices;
+
+		float3 maxProportions;
 };

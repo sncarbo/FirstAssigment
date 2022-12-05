@@ -25,7 +25,7 @@ class Model
 		void LoadMaterials(const char* path = modelPath, const char* texturePath = nullptr);
 		void LoadMeshes();
 
-		void CalculateModelCenter();
+		void CalculateModelParameters();
 
 		Mesh* GetMesh() const;
 		unsigned GetMaterial() const;

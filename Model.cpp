@@ -1,9 +1,9 @@
 #include "Model.h"
 #include <iostream>
 
-const char* Model::modelPath = "Assets/BakerHouse.fbx";
+const char* Model::modelPath = "Assets/BakerHouse/BakerHouse.fbx";
 
-Model::Model() : center(float3(0.0f, 0.0f, 0.0f))
+Model::Model() :  center(float3(0.0f, 0.0f, 0.0f))
 {}
 
 Model::~Model()
@@ -21,7 +21,7 @@ void Model::Load(const char* path, const char* texturePath)
 
 			LoadMaterials(path, texturePath);
 			LoadMeshes();
-			CalculateModelCenter();
+			CalculateModelParameters();
 		}
 		else
 		{
@@ -42,7 +42,7 @@ void Model::LoadMaterials(const char* path, const char* texturePath)
 			{
 				if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 				{
-					material = App->GetTextures()->LoadTexture(modelPath, file.data);
+					material = App->GetTextures()->LoadTexture(path, file.data);
 				}
 			}
 		}
@@ -61,14 +61,19 @@ void Model::LoadMeshes()
 	}
 }
 
-void Model::CalculateModelCenter()
+void Model::CalculateModelParameters()
 {
 	float averageX = 0.0f;
 	float averageY = 0.0f;
 	float averageZ = 0.0f;
 
+	float maxX = 0.0f;
+	float maxY = 0.0f;
+	float maxZ = 0.0f;
+
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{
+
 		averageX += scene->mMeshes[i]->mAABB.mMax.x;
 		averageX += scene->mMeshes[i]->mAABB.mMin.x;
 

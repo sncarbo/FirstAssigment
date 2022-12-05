@@ -16,13 +16,14 @@ bool ModuleCamera::Init()
 	farPlane = 200.0f;
 	horizontalFov = DegToRad(90.0f);
 	aspectRatio = App->GetWindow()->GetWidth() / App->GetWindow()->GetHeight();
-	pos = float3(0.0f, 2.0f, -5.0f);
-	front = float3::unitZ;
+	pos = float3(-4.0f, 1.5f, 11.0f);
+	front = -float3::unitZ;
 	up = float3::unitY;
 	movementSpeed = normal_movement_speed;
-	rotationSpeed = 10.0f;
+	rotationSpeed = 30.0f;
 	rotationDeltaMatrix = float3x3::identity;
 	center = float3(0.0f, 0.0f, 0.0f);
+	maxProportionsModel = float3(0.0f, 0.0f, 0.0f);
 
 	frustum.SetKind(frustumProjectiveSpace, frustumHandedness);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
@@ -31,6 +32,7 @@ bool ModuleCamera::Init()
 	frustum.SetFront(front);
 	frustum.SetUp(up);
 
+	AdjustFovForModel();
 	Focus();
 
 	return true;
@@ -47,7 +49,8 @@ update_status ModuleCamera::Update()
 	CalculateMouseDownDerivatives();
 	CalculateAuxiliaryDerivatives();
 	CalculateMouseWheelDerivatives();
-	UpdateFrustumParameters();
+
+	UpdateParameters();
 	
 	return UPDATE_CONTINUE;
 }
@@ -103,7 +106,10 @@ void ModuleCamera::CalculateMouseDownDerivatives()
 
 void ModuleCamera::CalculateAuxiliaryDerivatives()
 {
-	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_F))
+	if(App->GetInput()->GetModelChange())
+		AdjustFovForModel();
+
+	if (App->GetInput()->CheckScanCode(SDL_SCANCODE_F) || App->GetInput()->GetModelChange())
 		Focus();
 	
 	if ((App->GetInput()->CheckScanCode(SDL_SCANCODE_LALT) || App->GetInput()->CheckScanCode(SDL_SCANCODE_RALT))
@@ -119,7 +125,7 @@ void ModuleCamera::CalculateMouseWheelDerivatives()
 
 void ModuleCamera::SetHorizontalFov(float horizontalFov)
 {
-	this->horizontalFov += -horizontalFov * App->GetSimpleDeltaTime();
+	this->horizontalFov += -horizontalFov * rotationSpeed * App->GetSimpleDeltaTime();
 
 	if (this->horizontalFov < min_horizontal_fov)
 		this->horizontalFov = min_horizontal_fov;
@@ -166,6 +172,19 @@ void ModuleCamera::Focus()
 	RotateCamera(float3x3::LookAt(frustum.Front(), (center - pos).Normalized(), frustum.Up(), float3::unitY));
 }
 
+void ModuleCamera::AdjustFovForModel()
+{
+	maxProportionsModel = App->GetRenderer()->GetModel()->GetMesh()->GetMaxProportions();
+	horizontalFov = 2 * Atan(Sqrt(maxProportionsModel[0] * maxProportionsModel[0] + maxProportionsModel[1] * maxProportionsModel[1] + maxProportionsModel[2] * maxProportionsModel[2]) / 10.0f);
+	
+	if (horizontalFov < min_horizontal_fov)
+		horizontalFov = min_horizontal_fov;
+	else if (horizontalFov > max_horizontal_fov)
+		horizontalFov = max_horizontal_fov;
+	
+	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
+}
+
 void ModuleCamera::NormalMovementSpeed()
 {
 	movementSpeed = normal_movement_speed;
@@ -176,8 +195,10 @@ void ModuleCamera::DuplicateMovementSpeed()
 	movementSpeed = 2 * normal_movement_speed;
 }
 
-void ModuleCamera::UpdateFrustumParameters()
+void ModuleCamera::UpdateParameters()
 {
+	aspectRatio = App->GetWindow()->GetWidth() / App->GetWindow()->GetHeight();
+
 	frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
 	frustum.SetPos(pos);
 	frustum.SetFront(front);

@@ -30,7 +30,7 @@ bool ModuleWindow::Init()
 			height = SCREEN_HEIGHT;
 		}
 
-		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
+		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 		if(FULLSCREEN == true)
 		{
@@ -51,6 +51,13 @@ bool ModuleWindow::Init()
 	}
 
 	return ret;
+}
+
+update_status ModuleWindow::Update()
+{
+	SDL_GetWindowSize(window, (int*) &width, (int*) &height);
+
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleWindow::CleanUp()

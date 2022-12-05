@@ -94,7 +94,7 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::SetModel(const char* path)
 {
-	model->Load(path);
+	model->Load(path, nullptr);
 }
 
 void ModuleRender::SetTexture(const char* path)

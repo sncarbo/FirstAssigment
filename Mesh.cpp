@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh()
+Mesh::Mesh() : maxProportions(float3(0.0f, 0.0f, 0.0f))
 {}
 
 Mesh::~Mesh()
@@ -33,6 +33,15 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
 	{
 		uvs[i] = float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+
+		if (Abs(mesh->mVertices[i].x) > maxProportions[0])
+			maxProportions[0] = mesh->mVertices[i].x;
+
+		if (Abs(mesh->mVertices[i].y) > maxProportions[1])
+			maxProportions[1] = mesh->mVertices[i].y;
+
+		if (Abs(mesh->mVertices[i].z) > maxProportions[2])
+			maxProportions[2] = mesh->mVertices[i].z;
 	}
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -109,5 +118,10 @@ void Mesh::Draw(const unsigned& model_texture, const float4x4& model)
 
 		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
 	}
+}
+
+float3 Mesh::GetMaxProportions() const
+{
+	return maxProportions;
 }
 

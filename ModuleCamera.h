@@ -35,10 +35,11 @@ public:
 	void Zoom();
 	void Orbit();
 	void Focus();
+	void AdjustFovForModel();
 	void NormalMovementSpeed();
 	void DuplicateMovementSpeed();
 
-	void UpdateFrustumParameters();
+	void UpdateParameters();
 	void RotateCamera(float3x3 rotationDeltaMatrix);
 
 	Frustum GetFrustum() const;
@@ -66,4 +67,5 @@ private:
 	float3x3 rotationDeltaMatrix;
 
 	float3 center;
+	float3 maxProportionsModel;
 };
