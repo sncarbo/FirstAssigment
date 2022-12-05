@@ -104,16 +104,20 @@ GLuint ModuleTexture::LoadTexture(const char * modelPath, const char* texturePat
 			texturesPath[i] = folderTextures[i];
 
 		for (unsigned i = strlen(folderTextures); i < (strlen(folderTextures) + strlen(texturePath)); ++i)
-			texturesPath[i] = texturePath[i];
+			texturesPath[i] = texturePath[i - strlen(folderTextures)];
 
-		HRESULT hr = LoadFromDDSFile(wpath_t, DDS_FLAGS_NONE, &info, auxImage);
+		wchar_t* wpath_t3 = new wchar_t[strlen(texturesPath) + 1];
+
+		mbstowcs(wpath_t3, texturesPath, strlen(texturesPath) + 1);
+
+		hr = LoadFromDDSFile(wpath_t3, DDS_FLAGS_NONE, &info, auxImage);
 
 		if (FAILED(hr))
 		{
-			hr = LoadFromTGAFile(wpath_t, TGA_FLAGS_NONE, &info, auxImage);
+			hr = LoadFromTGAFile(wpath_t3, TGA_FLAGS_NONE, &info, auxImage);
 
 			if (FAILED(hr))
-				hr = LoadFromWICFile(wpath_t, WIC_FLAGS_NONE, &info, auxImage);
+				hr = LoadFromWICFile(wpath_t3, WIC_FLAGS_NONE, &info, auxImage);
 		}
 	}
 

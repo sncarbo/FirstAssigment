@@ -46,9 +46,9 @@ void Model::LoadMaterials(const char* path, const char* texturePath)
 				}
 			}
 		}
-		else
-			material = App->GetTextures()->LoadTexture(modelPath, texturePath);
 	}
+	else
+		material = App->GetTextures()->LoadTexture(modelPath, texturePath);
 }
 
 void Model::LoadMeshes()

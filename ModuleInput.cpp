@@ -45,14 +45,23 @@ update_status ModuleInput::Update()
             case SDL_DROPFILE:
                 if(sdlEvent.drop.file != nullptr){
                     const char * sFile = sdlEvent.drop.file;
-                    char* cFile = new char[4];
-                    memcpy(cFile, &sFile[strlen(sFile) - 4], 4);
+                    char* cFile = new char[strlen(sFile) + 1];
+                    cFile[strlen(sFile)] = '\0';
+                    memcpy(cFile, sFile, strlen(sFile));
 
-                    if (strcmp(cFile, ".fbx"))
+                    for (unsigned i = 0; i < strlen(sFile); ++i)
+                    {
+                        if (sFile[i] == '\\')
+                            cFile[i] = '/';
+                        else
+                            cFile[i] = sFile[i];
+                    }
+
+                    if (strcmp(&cFile[strlen(sFile) - 4], ".fbx") == 0)
                         App->GetRenderer()->SetModel(sdlEvent.drop.file);
-                    else if(strcmp(cFile, ".png"))
+                    else if(strcmp(&cFile[strlen(sFile) - 4], ".png") == 0)
                         App->GetRenderer()->SetTexture(sdlEvent.drop.file);
-                    else if(strcmp(cFile, ".dds"))
+                    else if(strcmp(&cFile[strlen(sFile) - 4], ".dds") == 0)
                         App->GetRenderer()->SetTexture(sdlEvent.drop.file);
                 }
 
