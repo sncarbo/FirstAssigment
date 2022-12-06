@@ -13,6 +13,7 @@ Application::Application()
 	modules.push_back(editor = new ModuleEditor());
 
 	timer = new Timers();
+	assimpLOG = string();
 }
 
 Application::~Application()
@@ -111,4 +112,25 @@ ModuleTexture* Application::GetTextures() const
 const float Application::GetSimpleDeltaTime() const
 {
 	return deltaTime;
+}
+
+const string Application::GetAssimpLOG() const
+{
+	return assimpLOG;
+
+}
+
+void Application::AssimpLOG(const char* log)
+{
+	if ((assimpLOG.size() + strlen(log) + 2) >= assimpLOG.max_size())
+		assimpLOG.clear();
+
+	assimpLOG.insert(0, "-");
+	assimpLOG.insert(1, " ");
+	assimpLOG.insert(2, log);
+}
+
+void Application::ClearAssimpLOG()
+{
+	assimpLOG.clear();
 }

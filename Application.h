@@ -46,6 +46,11 @@ public:
 	ModuleTexture *GetTextures() const;
 
 	const float GetSimpleDeltaTime() const;
+	const string GetAssimpLOG() const;
+	
+	void AssimpLOG(const char * log);
+	void ClearAssimpLOG();
+	
 
 private:
 	list<Module*> modules;
@@ -62,6 +67,7 @@ private:
 
 	Timers* timer;
 	float deltaTime;
+	string assimpLOG;
 };
 
 extern Application* App;

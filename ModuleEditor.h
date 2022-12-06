@@ -30,14 +30,41 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void GeneralMenu();
+	void ConfigurationWindow();
+	void PropertiesWindow();
+	void AssimpConsole();
+
 private:
-	ImVec2 generalDisplayProportions;
-	ImVec2 propertiesDisplayProportions;
-	ImVec2 configurationDisplayProportions;
-	ImVec2 assimpConsoleDisplayProportions;
+	update_status engineStatus;
+
+	bool p_open_general;
+	bool p_open_properties;
+	bool p_open_configuration;
+	bool p_open_console;
+	bool p_open_about;
+
+	ImGuiWindowFlags generalWindowFlags;
+	ImGuiWindowFlags propertiesWindowFlags;
+	ImGuiWindowFlags configurationWindowFlags;
+	ImGuiWindowFlags consoleWindowFlags;
 
 	char fpsTitleBuffer[25];
 	vector<float> fpsLog;
+
+	SDL_version compiledSDLVersion;
+	SDL_version linkedSDLVersion;
+
+	char* majorCompiledSDLVersion;
+	char* minorCompiledSDLVersion;
+	char* patchCompiledSDLVersion;
+	char* majorLinkedSDLVersion;
+	char* minorLinkedSDLVersion;
+	char* patchLinkedSDLVersion;
+	char * openGLVersion;
+	char * CPUL1CacheLineSize;
+	char * CPUCoresAvalaible;
+	char * RAMComsuption;
 
 	bool showProperties;
 	bool showConfiguration;

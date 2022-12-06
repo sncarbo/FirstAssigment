@@ -13,6 +13,8 @@ void Model::Load(const char* path, const char* texturePath)
 {
 	if (path != nullptr)
 	{
+		App->AssimpLOG("Creating aiScene structure.\n");
+
 		scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 		if (scene)
@@ -32,6 +34,8 @@ void Model::Load(const char* path, const char* texturePath)
 
 void Model::LoadMaterials(const char* path, const char* texturePath)
 {
+	App->AssimpLOG("Loading materials.\n");
+
 	if (path != nullptr)
 	{
 		if (texturePath == nullptr)
@@ -40,12 +44,22 @@ void Model::LoadMaterials(const char* path, const char* texturePath)
 
 			if (scene->mNumMaterials == 1)
 			{
+				App->AssimpLOG("Loading one material.\n");
+
 				if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 				{
+					App->AssimpLOG("Loading Diffuse Texture.\n");
+
 					material = App->GetTextures()->LoadTexture(path, file.data);
 				}
+				else
+					App->AssimpLOG("Error loading materials.\n");
 			}
+			else 
+				App->AssimpLOG("Error loading materials.\n");
 		}
+		else
+			App->AssimpLOG("Error loading materials.\n");
 	}
 	else
 		material = App->GetTextures()->LoadTexture(modelPath, texturePath);
@@ -53,10 +67,20 @@ void Model::LoadMaterials(const char* path, const char* texturePath)
 
 void Model::LoadMeshes()
 {
+	App->AssimpLOG("Loading all meshes.\n");
+
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i)
 	{
+		App->AssimpLOG("Loading VBOs.\n");
+
 		mesh->LoadVBO(scene->mMeshes[i]);
+
+		App->AssimpLOG("Loading EBOs.\n");
+
 		mesh->LoadEBO(scene->mMeshes[i]);
+
+		App->AssimpLOG("Creating VAOs.\n");
+
 		mesh->CreateVAO(i);
 	}
 }

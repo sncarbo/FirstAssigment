@@ -10,6 +10,8 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 {
 	unsigned vbo;
 
+	App->AssimpLOG("Generating VBO.\n");
+
 	glGenBuffers(1, &vbo);
 
 	this->vbo.push_back(vbo);
@@ -30,6 +32,8 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	unsigned uv_size = sizeof(float) * 2 * mesh->mNumVertices;
 	float2* uvs = (float2*)(glMapBufferRange(GL_ARRAY_BUFFER, uv_offset, uv_size, GL_MAP_WRITE_BIT));
 	
+	App->AssimpLOG("Adding Texture Coordinates.\n");
+
 	for (unsigned i = 0; i < mesh->mNumVertices; ++i)
 	{
 		uvs[i] = float2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
@@ -53,6 +57,8 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 {
 	unsigned ebo;
 
+	App->AssimpLOG("Generating EBO.\n");
+
 	glGenBuffers(1, &ebo);
 
 	this->ebo.push_back(ebo);
@@ -64,6 +70,8 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, nullptr, GL_STATIC_DRAW);
 
 	unsigned *indices = (unsigned*)(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
+
+	App->AssimpLOG("Assigning indices.\n");
 
 	for (unsigned i = 0; i < mesh->mNumFaces; ++i)
 	{
@@ -81,6 +89,8 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 void Mesh::CreateVAO(int index)
 {
 	unsigned vao;
+
+	App->AssimpLOG("Generating VAO.\n");
 
 	glGenVertexArrays(1, &vao);
 
@@ -105,7 +115,7 @@ void Mesh::Draw(const unsigned& model_texture, const float4x4& model)
 	glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_TRUE, (const float*)&model);
 	glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_TRUE, (const float*)&view);
 	glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 1, GL_TRUE, (const float*)&proj);
-	
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, model_texture);
 
