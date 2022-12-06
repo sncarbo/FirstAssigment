@@ -201,6 +201,31 @@ void ModuleEditor::ConfigurationWindow()
 		else
 			ImGui::Text("The CPU has not RDTSC features");
 
+		if (SDL_HasSSE())
+			ImGui::Text("The CPU has SSE features");
+		else
+			ImGui::Text("The CPU has not SEE features");
+
+		if (SDL_HasSSE2())
+			ImGui::Text("The CPU has SSE2 features");
+		else
+			ImGui::Text("The CPU has not SEE2 features");
+
+		if (SDL_HasSSE3())
+			ImGui::Text("The CPU has SSE3 features");
+		else
+			ImGui::Text("The CPU has not SEE3 features");
+
+		if (SDL_HasSSE41())
+			ImGui::Text("The CPU has SSE41 features");
+		else
+			ImGui::Text("The CPU has not SEE41 features");
+
+		if (SDL_HasSSE42())
+			ImGui::Text("The CPU has SSE42 features");
+		else
+			ImGui::Text("The CPU has not SEE42 features");
+
 		SDL_VERSION(&compiledSDLVersion);
 		SDL_GetVersion(&linkedSDLVersion);
 
@@ -213,27 +238,27 @@ void ModuleEditor::ConfigurationWindow()
 		sprintf(patchLinkedSDLVersion, "%u", linkedSDLVersion.patch);
 
 		ImGui::Text("Compiling SDL Version: ");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(majorCompiledSDLVersion);
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(".");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(minorCompiledSDLVersion);
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(".");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(patchCompiledSDLVersion);
 
 		ImGui::Text("Linking SDL Version: ");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(majorLinkedSDLVersion);
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(".");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(minorLinkedSDLVersion);
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(".");
-		ImGui::SameLine();
+		ImGui::SameLine(0.0f, 0.0f);
 		ImGui::Text(patchLinkedSDLVersion);
 
 		sprintf(openGLVersion, "%d", GL_VERSION);
