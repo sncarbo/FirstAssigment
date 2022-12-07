@@ -1,6 +1,8 @@
 #include "Mesh.h"
 
-Mesh::Mesh() : maxProportions(float3(0.0f, 0.0f, 0.0f))
+Mesh::Mesh() : maxProportions(float3(0.0f, 0.0f, 0.0f)), 
+				num_vertices(0), num_indices(0), num_faces(0),
+				total_vertices(0), total_indices(0), total_faces(0)
 {}
 
 Mesh::~Mesh()
@@ -51,6 +53,7 @@ void Mesh::LoadVBO(const aiMesh* mesh)
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	num_vertices = mesh->mNumVertices;
+	total_vertices += num_vertices;
 }
 
 void Mesh::LoadEBO(const aiMesh* mesh)
@@ -83,7 +86,10 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 	}
 
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	num_faces = mesh->mNumFaces;
+	total_faces += num_faces;
 	num_indices = mesh->mNumFaces * indices_per_face;
+	total_indices += num_indices;
 }
 
 void Mesh::CreateVAO(int index)
@@ -128,6 +134,21 @@ void Mesh::Draw(const unsigned& model_texture, const float4x4& model)
 
 		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
 	}
+}
+
+const unsigned Mesh::GetNumVertices() const
+{
+	return total_vertices;
+}
+
+const unsigned Mesh::GetNumIndices() const
+{
+	return total_indices;
+}
+
+const unsigned Mesh::GetNumFaces() const
+{
+	return total_faces;
 }
 
 float3 Mesh::GetMaxProportions() const

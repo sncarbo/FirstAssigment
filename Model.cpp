@@ -120,6 +120,11 @@ Mesh* Model::GetMesh() const
 	return mesh;
 }
 
+const unsigned Model::GetMeshCount() const
+{
+	return scene->mNumMeshes;
+}
+
 unsigned Model::GetMaterial() const
 {
 	return material;

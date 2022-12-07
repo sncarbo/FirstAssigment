@@ -14,16 +14,34 @@ bool ModuleEditor::Init()
 	io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	generalWindowFlags |= ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
-	propertiesWindowFlags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
-	configurationWindowFlags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
-	consoleWindowFlags |= ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+	generalWindowFlags |= ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize;
+	propertiesWindowFlags |= ImGuiWindowFlags_NoResize;
+	configurationWindowFlags |= ImGuiWindowFlags_NoResize;
+	consoleWindowFlags |= ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize;
+
+	transformationSectionFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+	geometrySectionFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+	textureSectionFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+
+	moduleRendererVariablesFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+	moduleWindowVariablesFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+	moduleInputVariablesFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
+	moduleTexturesVariablesFlags |= ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_DefaultOpen;
 
 	p_open_general = true;
 	p_open_properties = true;
 	p_open_configuration = true;
 	p_open_console = true;
-	p_open_about = false;
+	p_open_about = true;
+
+	p_open_module_renderer_variables = true;
+	p_open_module_window_variables = true;
+	p_open_module_input_variables = true;
+	p_open_module_texture_variables = true;
+
+	p_open_transformation_section = true;
+	p_open_geometry_section = true;
+	p_open_texture_section = true;
 
 	compiledSDLVersion = SDL_version();
 	linkedSDLVersion = SDL_version();
@@ -40,6 +58,19 @@ bool ModuleEditor::Init()
 	CPUCoresAvalaible[0] = '\0';
 	RAMComsuption = new char[50];
 	RAMComsuption[0] = '\0';
+
+	widthTexture = new char[10];
+	widthTexture[0] = '\0';
+	heightTexture = new char[10];
+	heightTexture[0] = '\0';
+	verticesCount = new char[20];
+	verticesCount[0] = '\0';
+	indicesCount = new char[20];
+	indicesCount[0] = '\0';
+	triangleCount = new char[20];
+	triangleCount[0] = '\0';
+	meshCount = new char[20];
+	meshCount[0] = '\0';
 
 	engineStatus = UPDATE_CONTINUE;
 
@@ -267,6 +298,26 @@ void ModuleEditor::ConfigurationWindow()
 		ImGui::SameLine();
 		ImGui::Text(openGLVersion);
 
+		if (ImGui::CollapsingHeader("Module Renderer Variables", &p_open_module_renderer_variables, moduleRendererVariablesFlags))
+		{
+			
+		}
+
+		if (ImGui::CollapsingHeader("Module Window Variables", &p_open_module_window_variables, moduleWindowVariablesFlags))
+		{
+
+		}
+
+		if (ImGui::CollapsingHeader("Module Input Variables", &p_open_module_input_variables, moduleInputVariablesFlags))
+		{
+
+		}
+
+		if (ImGui::CollapsingHeader("Module Texture Variables", &p_open_module_texture_variables, moduleTexturesVariablesFlags))
+		{
+
+		}
+
 		ImGui::End();
 	}
 }
@@ -277,7 +328,64 @@ void ModuleEditor::PropertiesWindow()
 	{
 		ImGui::Begin("Properties", &p_open_properties, propertiesWindowFlags);
 
+		if (ImGui::CollapsingHeader("Transformation", &p_open_transformation_section, transformationSectionFlags))
+		{
+			sprintf(meshCount, "%u", App->GetRenderer()->GetModel()->GetMeshCount());
 
+			ImGui::Text("Meshes Count: ");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(meshCount);
+
+			ImGui::Text("Textures Count: 1");
+		}
+
+		if (ImGui::CollapsingHeader("Geometry", &p_open_geometry_section, geometrySectionFlags))
+		{
+			sprintf(verticesCount, "%u", App->GetRenderer()->GetModel()->GetMesh()->GetNumIndices());
+			sprintf(indicesCount, "%u", App->GetRenderer()->GetModel()->GetMesh()->GetNumIndices());
+			sprintf(triangleCount, "%u", App->GetRenderer()->GetModel()->GetMesh()->GetNumFaces());
+
+			ImGui::Text("Vertices Count: ");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(verticesCount);
+
+			ImGui::Text("Indices Count: ");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(indicesCount);
+
+			ImGui::Text("Triangle Count: ");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(triangleCount);
+		}
+
+		if (ImGui::CollapsingHeader("Texture", &p_open_texture_section, textureSectionFlags))
+		{
+			sprintf(widthTexture, "%u", App->GetTextures()->GetInfo().width);
+			sprintf(heightTexture, "%u", App->GetTextures()->GetInfo().height);
+
+			ImGui::Text("Texture Size (px): ");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(widthTexture);
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text("x");
+			ImGui::SameLine(0.0f, 0.0f);
+			ImGui::Text(heightTexture);
+
+			if (App->GetTextures()->GetInfo().IsVolumemap())
+				ImGui::Text("The texture is a Volume Map");
+			else
+				ImGui::Text("The texture is not a Volume Map");
+
+			if (App->GetTextures()->GetInfo().IsCubemap())
+				ImGui::Text("The texture is a Cube Map");
+			else
+				ImGui::Text("The texture is not a Cube Map");
+
+			if (App->GetTextures()->GetInfo().IsPMAlpha())
+				ImGui::Text("The texture has PM Alpha");
+			else
+				ImGui::Text("The texture has not PM Alpha");
+		}
 
 		ImGui::End();
 	}

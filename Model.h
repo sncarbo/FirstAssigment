@@ -28,6 +28,7 @@ class Model
 		void CalculateModelParameters();
 
 		Mesh* GetMesh() const;
+		const unsigned GetMeshCount() const;
 		unsigned GetMaterial() const;
 		float3 GetCenter() const;
 	private:
