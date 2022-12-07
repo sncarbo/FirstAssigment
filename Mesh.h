@@ -22,7 +22,7 @@ class Mesh
 
 		void LoadVBO(const aiMesh* mesh);
 		void LoadEBO(const aiMesh* mesh);
-		void CreateVAO(int index);
+		void CreateVAO(const int & index);
 		void Draw(const unsigned& model_texture, const float4x4& model);
 
 		const unsigned GetNumVertices() const;

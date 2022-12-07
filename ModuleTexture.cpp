@@ -1,6 +1,9 @@
 #include "ModuleTexture.h"
 
-ModuleTexture::ModuleTexture() : texture(nullptr), textureId(-1)
+ModuleTexture::ModuleTexture() : texture(nullptr), textureId(-1), flippedTexture(true)
+{}
+
+ModuleTexture::~ModuleTexture()
 {}
 
 bool ModuleTexture::Init()
@@ -23,12 +26,16 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
-ModuleTexture::~ModuleTexture()
-{}
+void ModuleTexture::SetFlippedTexture(bool value)
+{
+	flippedTexture = value;
+
+	App->GetRenderer()->GetModel()->LoadMaterials(App->GetRenderer()->GetModel()->GetCurrentModelPath(), texturePath);
+}
 
 GLuint ModuleTexture::LoadTexture(const char * modelPath, const char* texturePath)
 {
-	ScratchImage auxImage;
+	this->texturePath = texturePath;
 
 	LOG2("First check: Path described in the FBX");
 
@@ -124,38 +131,77 @@ GLuint ModuleTexture::LoadTexture(const char * modelPath, const char* texturePat
 	if (SUCCEEDED(hr))
 	{
 		ScratchImage flippedTexture;
-		FlipRotate(auxImage.GetImages(), auxImage.GetImageCount(), auxImage.GetMetadata(), TEX_FR_FLIP_VERTICAL, flippedTexture);
-		texture = flippedTexture.GetImage(0, 0, 0);
+
+		if (this->flippedTexture)
+		{
+			FlipRotate(auxImage.GetImages(), auxImage.GetImageCount(), auxImage.GetMetadata(), TEX_FR_FLIP_VERTICAL, flippedTexture);
+			texture = flippedTexture.GetImage(0, 0, 0);
+		}
+		else
+		{
+			texture = auxImage.GetImage(0, 0, 0);
+		}
 
 		glGenTextures(1, &textureId);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
 		GLint internalFormat, format, type;
 
-		switch (flippedTexture.GetMetadata().format)
+		if (this->flippedTexture)
 		{
-		case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+			switch (flippedTexture.GetMetadata().format)
+			{
+			case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
 
-		case DXGI_FORMAT_R8G8B8A8_UNORM:
-			internalFormat = GL_RGBA8;
-			format = GL_RGBA;
-			type = GL_UNSIGNED_BYTE;
-			break;
+			case DXGI_FORMAT_R8G8B8A8_UNORM:
+				internalFormat = GL_RGBA8;
+				format = GL_RGBA;
+				type = GL_UNSIGNED_BYTE;
+				break;
 
-		case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+			case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
 
-		case DXGI_FORMAT_B8G8R8A8_UNORM:
-			internalFormat = GL_RGBA8;
-			format = GL_BGRA;
-			type = GL_UNSIGNED_BYTE;
-			break;
+			case DXGI_FORMAT_B8G8R8A8_UNORM:
+				internalFormat = GL_RGBA8;
+				format = GL_BGRA;
+				type = GL_UNSIGNED_BYTE;
+				break;
 			case DXGI_FORMAT_B5G6R5_UNORM:
-			internalFormat = GL_RGB8;
-			format = GL_BGR;
-			type = GL_UNSIGNED_BYTE;
-			break;
-		default:
-			assert(false && "Unsupported format");
+				internalFormat = GL_RGB8;
+				format = GL_BGR;
+				type = GL_UNSIGNED_BYTE;
+				break;
+			default:
+				assert(false && "Unsupported format");
+			}
+		}
+		else
+		{
+			switch (auxImage.GetMetadata().format)
+			{
+			case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+
+			case DXGI_FORMAT_R8G8B8A8_UNORM:
+				internalFormat = GL_RGBA8;
+				format = GL_RGBA;
+				type = GL_UNSIGNED_BYTE;
+				break;
+
+			case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+
+			case DXGI_FORMAT_B8G8R8A8_UNORM:
+				internalFormat = GL_RGBA8;
+				format = GL_BGRA;
+				type = GL_UNSIGNED_BYTE;
+				break;
+			case DXGI_FORMAT_B5G6R5_UNORM:
+				internalFormat = GL_RGB8;
+				format = GL_BGR;
+				type = GL_UNSIGNED_BYTE;
+				break;
+			default:
+				assert(false && "Unsupported format");
+			}
 		}
 
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, texture->width, texture->height, 0, format, type, texture->pixels);

@@ -92,7 +92,7 @@ void Mesh::LoadEBO(const aiMesh* mesh)
 	total_indices += num_indices;
 }
 
-void Mesh::CreateVAO(int index)
+void Mesh::CreateVAO(const int & index)
 {
 	unsigned vao;
 

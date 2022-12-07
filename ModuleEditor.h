@@ -89,9 +89,19 @@ private:
 	char * widthTexture;
 	char * heightTexture;
 
-	bool showProperties;
-	bool showConfiguration;
-	bool showAssimpConsole;
+	bool fullscreen;
+	bool fullscreenDesktop;
+	bool resizable;
+
+	float mouseMotionSensitivity;
+	bool inverseMouse;
+
+	float squareGridMins;
+	float squareGridMaxs;
+	float squareGridY;
+	float squareGridStep;
+
+	bool flippedTexture;
 
 	ImGuiIO io;
 };

@@ -1,7 +1,8 @@
 #include "ModuleWindow.h"
 
 ModuleWindow::ModuleWindow() : window(nullptr), screenSurface(nullptr), displayProportions(SDL_DisplayMode()),
-								width(0.0f), height(0.0f)
+								width(0.0f), height(0.0f), 
+								fullscreen(false), fullscreenDesktop(false), resizable(true)
 {}
 
 ModuleWindow::~ModuleWindow()
@@ -71,6 +72,41 @@ bool ModuleWindow::CleanUp()
 
 	SDL_Quit();
 	return true;
+}
+
+void  ModuleWindow::SetFullscreen(bool mode)
+{
+	fullscreen = mode;
+
+	if (fullscreen)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	else
+	{
+		if(fullscreenDesktop)
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		else
+			SDL_SetWindowFullscreen(window, 0);
+	}
+}
+
+void  ModuleWindow::SetFullscreenDesktop(bool mode)
+{
+	fullscreenDesktop = mode;
+
+	if (fullscreenDesktop)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void ModuleWindow::SetResizable(bool mode)
+{
+	resizable = mode;
+
+	if (resizable)
+		SDL_SetWindowResizable(window, SDL_TRUE);
+	else
+		SDL_SetWindowResizable(window, SDL_FALSE);
 }
 
 float ModuleWindow::GetWidth() const

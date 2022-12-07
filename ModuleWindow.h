@@ -17,6 +17,10 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void SetFullscreen(bool mode);
+	void SetFullscreenDesktop(bool mode);
+	void SetResizable(bool mode);
+
 	float GetWidth() const;
 	float GetHeight() const;
 
@@ -27,4 +31,8 @@ public:
 
 	float width;
 	float height;
+
+	bool fullscreen;
+	bool fullscreenDesktop;
+	bool resizable;
 };

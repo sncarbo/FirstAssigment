@@ -26,8 +26,8 @@ class ModuleDebugDraw : public Module
 	    update_status Update();
 	    bool CleanUp();
 
-        void DrawSquareGrid(float mins, float maxs, float y, float step, ddVec3_In color);
-        void Draw(const float4x4& view, const float4x4& proj, unsigned width, unsigned height);
+        void DrawSquareGrid(const float & mins, const float & maxs, const float & y, const float & step, const ddVec3_In & color);
+        void Draw(const float4x4& view, const float4x4& proj, const unsigned & width, const unsigned & height);
     private:
         static DDRenderInterfaceCoreGL* implementation;
 };

@@ -34,18 +34,23 @@ public:
 	void SetModel(const char * path);
 	void SetTexture(const char* path);
 
+	void SetSquareGridMins(const float& mins);
+	void SetSquareGridMaxs(const float& maxs);
+	void SetSquareGridY(const float& y);
+	void SetSquareGridStep(const float& step);
+
 	Model* GetModel() const;
 
-	void WindowResized(unsigned width, unsigned height);
+	void WindowResized(const unsigned & width, const unsigned & height);
 	void* GetContext();
 	ShadersProgram* GetProgram() const;
 	void Draw();
 
 private:
-	const float square_grid_mins = -50.0f;
-	const float square_grid_maxs = 50.0f;
-	const float square_grid_y = 0.0f;
-	const float square_grid_step = 1.0f;
+	float square_grid_mins;
+	float square_grid_maxs;
+	float square_grid_y;
+	float square_grid_step;
 
 	void *context;
 	int width, height;

@@ -27,6 +27,7 @@ class Model
 
 		void CalculateModelParameters();
 
+		const char* GetCurrentModelPath() const;
 		Mesh* GetMesh() const;
 		const unsigned GetMeshCount() const;
 		unsigned GetMaterial() const;
@@ -34,6 +35,7 @@ class Model
 	private:
 		static const char* modelPath;
 
+		const char* currentModelPath;
 		const aiScene *scene;
 		Mesh *mesh;
 		unsigned material;

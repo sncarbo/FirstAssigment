@@ -18,8 +18,8 @@ class ShadersProgram
 
 	private:
 		char *LoadShaderSource(const char *shader_file_name);
-		unsigned CompileShader(unsigned type, const char *source);
-		unsigned CreateProgram(unsigned vtx_shader, unsigned frg_shader);
+		unsigned CompileShader(const unsigned & type, const char *source);
+		unsigned CreateProgram(const unsigned & vtx_shader, const unsigned & frg_shader);
 
 	private:
 		unsigned int shaderProgramId;

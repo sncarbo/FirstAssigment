@@ -41,7 +41,7 @@ char* ShadersProgram::LoadShaderSource(const char* shader_file_name) {
 	return data;
 }
 
-unsigned ShadersProgram::CompileShader(unsigned type, const char* source)
+unsigned ShadersProgram::CompileShader(const unsigned & type, const char* source)
 {
 	unsigned shader_id = glCreateShader(type);
 	glShaderSource(shader_id, 1, &source, 0);
@@ -68,7 +68,7 @@ unsigned ShadersProgram::CompileShader(unsigned type, const char* source)
 	return shader_id;
 }
 
-unsigned ShadersProgram::CreateProgram(unsigned vtx_shader, unsigned frg_shader)
+unsigned ShadersProgram::CreateProgram(const unsigned & vtx_shader, const unsigned & frg_shader)
 {
 	unsigned program_id = glCreateProgram();
 	glAttachShader(program_id, vtx_shader);

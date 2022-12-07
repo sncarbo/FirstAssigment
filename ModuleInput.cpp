@@ -1,7 +1,8 @@
 #include "ModuleInput.h"
 
 ModuleInput::ModuleInput() : keyboard(NULL), leftMouseDown(false), rightMouseDown(false),
-                                mouseX(0.0), mouseY(0.0), mouseWheel(0), modelChange(false)
+                                mouseX(0.0), mouseY(0.0), mouseWheel(0), modelChange(false),
+                                mouseMotionSensitivity(1.0f), inverseMouse(1)
 {}
 
 ModuleInput::~ModuleInput()
@@ -90,8 +91,8 @@ update_status ModuleInput::Update()
                 break;
 
             case SDL_MOUSEMOTION:
-                mouseX = sdlEvent.motion.xrel;
-                mouseY = sdlEvent.motion.yrel;
+                mouseX = mouseMotionSensitivity * inverseMouse * sdlEvent.motion.xrel;
+                mouseY = mouseMotionSensitivity * inverseMouse * sdlEvent.motion.yrel;
                 break;
 
             case SDL_MOUSEWHEEL:
@@ -112,6 +113,19 @@ bool ModuleInput::CleanUp()
 	LOG2("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+void ModuleInput::SetMouseMotionSensitivity(const float & value)
+{
+    mouseMotionSensitivity = value;
+}
+
+void ModuleInput::SetInverseMouse(bool value)
+{
+    if (value)
+        inverseMouse = -1;
+    else
+        inverseMouse = 1;
 }
 
 bool ModuleInput::GetLeftMouseDown() const
@@ -159,7 +173,7 @@ bool ModuleInput::Scroll()
     return (mouseWheel != 0);
 }
 
-bool ModuleInput::CheckScanCode(int scancode)
+bool ModuleInput::CheckScanCode(const int & scancode)
 {
     bool result = false;
 

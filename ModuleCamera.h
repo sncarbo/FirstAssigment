@@ -26,7 +26,7 @@ public:
 	void CalculateAuxiliaryDerivatives();
 	void CalculateMouseWheelDerivatives();
 
-	void SetHorizontalFov(float horizontalFov);
+	void SetHorizontalFov(const float & horizontalFov);
 
 	void MoveFront();
 	void MoveBack();
@@ -40,7 +40,7 @@ public:
 	void DuplicateMovementSpeed();
 
 	void UpdateParameters();
-	void RotateCamera(float3x3 rotationDeltaMatrix);
+	void RotateCamera(const float3x3 & rotationDeltaMatrix);
 
 	Frustum GetFrustum() const;
 

@@ -15,6 +15,8 @@ void Model::Load(const char* path, const char* texturePath)
 	{
 		App->AssimpLOG("Creating aiScene structure.\n");
 
+		currentModelPath = path;
+
 		scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 
 		if (scene)
@@ -38,28 +40,24 @@ void Model::LoadMaterials(const char* path, const char* texturePath)
 
 	if (path != nullptr)
 	{
-		if (texturePath == nullptr)
+		aiString file;
+
+		if (scene->mNumMaterials == 1)
 		{
-			aiString file;
+			App->AssimpLOG("Loading one material.\n");
 
-			if (scene->mNumMaterials == 1)
+			if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 			{
-				App->AssimpLOG("Loading one material.\n");
+				App->AssimpLOG("Loading Diffuse Texture.\n");
 
-				if (scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
-				{
-					App->AssimpLOG("Loading Diffuse Texture.\n");
-
-					material = App->GetTextures()->LoadTexture(path, file.data);
-				}
-				else
-					App->AssimpLOG("Error loading materials.\n");
+				material = App->GetTextures()->LoadTexture(path, file.data);
 			}
-			else 
+			else
 				App->AssimpLOG("Error loading materials.\n");
 		}
-		else
+		else 
 			App->AssimpLOG("Error loading materials.\n");
+		
 	}
 	else
 		material = App->GetTextures()->LoadTexture(modelPath, texturePath);
@@ -113,6 +111,11 @@ void Model::CalculateModelParameters()
 	averageZ = averageZ / (2 * scene->mNumMeshes);
 
 	center = float3(averageX, averageY, averageZ);
+}
+
+const char* Model::GetCurrentModelPath() const
+{
+	return currentModelPath;
 }
 
 Mesh* Model::GetMesh() const

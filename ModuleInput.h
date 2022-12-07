@@ -22,6 +22,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void SetMouseMotionSensitivity(const float & value);
+	void SetInverseMouse(bool value);
+
 	bool GetLeftMouseDown() const;
 	bool GetRightMouseDown() const;
 	float GetMouseX() const;
@@ -33,7 +36,7 @@ public:
 
 	bool Scroll();
 
-	bool CheckScanCode(int scancode);
+	bool CheckScanCode(const int & scancode);
 
 private:
 	const unsigned scrolling_up = 1;
@@ -44,6 +47,9 @@ private:
 	bool rightMouseDown;
 	float mouseX, mouseY;
 	int mouseWheel;
+
+	float mouseMotionSensitivity;
+	int inverseMouse;
 
 	bool modelChange;
 };

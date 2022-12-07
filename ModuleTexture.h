@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Module.h"
+#include "Application.h"
 
 #include "glew.h"
 #include "DirectXTex.h"
@@ -22,12 +23,18 @@ class ModuleTexture : public Module
 		update_status Update();
 		bool CleanUp();
 
+		void SetFlippedTexture(bool value);
+
 		GLuint LoadTexture(const char * modelPath, const char* texturePath);
 
 		TexMetadata& GetInfo();
 
 	private:
+		ScratchImage auxImage;
 		const Image* texture;
+		const char * texturePath;
 		GLuint textureId;
 		TexMetadata info;
+
+		bool flippedTexture;
 };

@@ -123,7 +123,7 @@ void ModuleCamera::CalculateMouseWheelDerivatives()
 		Zoom();
 }
 
-void ModuleCamera::SetHorizontalFov(float horizontalFov)
+void ModuleCamera::SetHorizontalFov(const float & horizontalFov)
 {
 	this->horizontalFov += -horizontalFov * rotationSpeed * App->GetSimpleDeltaTime();
 
@@ -205,7 +205,7 @@ void ModuleCamera::UpdateParameters()
 	frustum.SetUp(up);
 }
 
-void ModuleCamera::RotateCamera(float3x3 rotationDeltaMatrix)
+void ModuleCamera::RotateCamera(const float3x3 & rotationDeltaMatrix)
 {
 	vec oldFront = frustum.Front().Normalized();
 	front = rotationDeltaMatrix * oldFront;

@@ -1,6 +1,7 @@
 #include "ModuleRender.h"
 
-ModuleRender::ModuleRender()
+ModuleRender::ModuleRender() : square_grid_mins(-50.0f), square_grid_maxs(50.0f),
+								square_grid_y(0.0f), square_grid_step(1.0f)
 {
 }
 
@@ -102,12 +103,32 @@ void ModuleRender::SetTexture(const char* path)
 	model->LoadMaterials(nullptr, path);
 }
 
+void ModuleRender::SetSquareGridMins(const float& mins)
+{
+	square_grid_mins = mins;
+}
+
+void ModuleRender::SetSquareGridMaxs(const float& maxs)
+{
+	square_grid_maxs = maxs;
+}
+
+void ModuleRender::SetSquareGridY(const float& y)
+{
+	square_grid_y = y;
+}
+
+void ModuleRender::SetSquareGridStep(const float& step)
+{
+	square_grid_step = step;
+}
+
 Model* ModuleRender::GetModel() const
 {
 	return model;
 }
 
-void ModuleRender::WindowResized(unsigned width, unsigned height)
+void ModuleRender::WindowResized(const unsigned & width, const unsigned & height)
 {
 	this->width = width;
 	this->height = height;

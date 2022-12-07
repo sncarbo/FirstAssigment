@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ModuleEditor::ModuleEditor() : showProperties(true), showConfiguration(true), showAssimpConsole(true)
+ModuleEditor::ModuleEditor()
 {}
 
 ModuleEditor::~ModuleEditor()
@@ -43,6 +43,10 @@ bool ModuleEditor::Init()
 	p_open_geometry_section = true;
 	p_open_texture_section = true;
 
+	fullscreen = false;
+	fullscreenDesktop = false;
+	resizable = true;
+
 	compiledSDLVersion = SDL_version();
 	linkedSDLVersion = SDL_version();
 	majorCompiledSDLVersion = new char[5];
@@ -71,6 +75,16 @@ bool ModuleEditor::Init()
 	triangleCount[0] = '\0';
 	meshCount = new char[20];
 	meshCount[0] = '\0';
+
+	mouseMotionSensitivity = 1.0f;
+	inverseMouse = false;
+
+	squareGridMins = -50.0f;
+	squareGridMaxs = 50.0f;
+	squareGridY = 0.0f;
+	squareGridStep = 1.0f;
+
+	flippedTexture = true;
 
 	engineStatus = UPDATE_CONTINUE;
 
@@ -180,6 +194,9 @@ void ModuleEditor::ConfigurationWindow()
 		ImGui::Begin("Configuration", &p_open_configuration, configurationWindowFlags);
 
 		fpsLog.push_back(1.0f / io.DeltaTime);
+
+		if (fpsLog.size() == fpsLog.max_size())
+			fpsLog.clear();
 
 		sprintf_s(fpsTitleBuffer, 25, "Framerate %.1f", fpsLog[fpsLog.size() - 1]);
 		ImGui::PlotHistogram("##framerate", &fpsLog[0], fpsLog.size(), 0, fpsTitleBuffer, 0.0f, 100.0f, ImVec2(210, 100));
@@ -300,22 +317,54 @@ void ModuleEditor::ConfigurationWindow()
 
 		if (ImGui::CollapsingHeader("Module Renderer Variables", &p_open_module_renderer_variables, moduleRendererVariablesFlags))
 		{
-			
+			ImGui::Text("Square Grid");
+
+			if (ImGui::SliderFloat("Mins", &squareGridMins, -60.0f, -40.0f))
+				App->GetRenderer()->SetSquareGridMins(squareGridMins);
+
+			if (ImGui::SliderFloat("Maxs", &squareGridMaxs, 40.0f, 60.0f))
+				App->GetRenderer()->SetSquareGridMaxs(squareGridMaxs);
+
+			if (ImGui::SliderFloat("Y", &squareGridY, -1.0f, 1.0f))
+				App->GetRenderer()->SetSquareGridY(squareGridY);
+
+			if (ImGui::SliderFloat("Step", &squareGridStep, 0.5f, 2.0f))
+				App->GetRenderer()->SetSquareGridStep(squareGridStep);
 		}
 
 		if (ImGui::CollapsingHeader("Module Window Variables", &p_open_module_window_variables, moduleWindowVariablesFlags))
 		{
+			if (ImGui::Checkbox("Fullscreen", &fullscreen))
+				App->GetWindow()->SetFullscreen(fullscreen);
+			
+			if (!fullscreen)
+			{
+				if (ImGui::Checkbox("Fullscreen Desktop", &fullscreenDesktop))
+					App->GetWindow()->SetFullscreenDesktop(fullscreenDesktop);
 
+				if (!fullscreen && !fullscreenDesktop)
+				{
+					if (ImGui::Checkbox("Resizable", &resizable))
+						App->GetWindow()->SetResizable(resizable);
+				}
+			}
 		}
 
 		if (ImGui::CollapsingHeader("Module Input Variables", &p_open_module_input_variables, moduleInputVariablesFlags))
 		{
+			if (ImGui::Checkbox("Inverse Mouse", &inverseMouse))
+				App->GetInput()->SetInverseMouse(inverseMouse);
 
+			ImGui::Text("Mouse Sensitivity");
+
+			if (ImGui::SliderFloat(" ", &mouseMotionSensitivity, 0.5f, 2.0f))
+				App->GetInput()->SetMouseMotionSensitivity(mouseMotionSensitivity);
 		}
 
 		if (ImGui::CollapsingHeader("Module Texture Variables", &p_open_module_texture_variables, moduleTexturesVariablesFlags))
 		{
-
+			if (ImGui::Checkbox("Flipped Texture", &flippedTexture))
+				App->GetTextures()->SetFlippedTexture(flippedTexture);
 		}
 
 		ImGui::End();
